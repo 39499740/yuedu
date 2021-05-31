@@ -36,6 +36,10 @@ dependencies:
   html: ^0.15.0
   sqflite: ^2.0.0+3
   uuid: ^3.0.4
+  flutter_downloader: ^1.6.1
+  sn_progress_dialog: ^1.0.2
+  battery: ^2.0.3
+  extended_image: ^4.1.0
 
 
 dev_dependencies:

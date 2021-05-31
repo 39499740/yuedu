@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:yuedu/db/bookShelf.dart';
 import 'package:yuedu/model/pageModel.dart';
 import 'package:yuedu/textfile.dart';
 import 'package:yuedu/utils/Paging_tools.dart';
@@ -48,12 +49,14 @@ class _ReadPageState extends State<ReadPage> {
               children: [
                 TextButton(
                   onPressed: () {
-                    ls.saveBookToShelf(bookInfoList.first);
+                    ls.insertBookToLocalstorage(bookInfoList.first);
+                    // ls.saveBookToShelf(bookInfoList.first);
                   },
                   child: Text("存"),
                 ),
-                TextButton(onPressed: () {
-                  var temp = ls.getShelf();
+                TextButton(onPressed: () async {
+                  List<BookInfo>? temp = await ls.getAllBooksFromLocalStorage();
+                  print(temp!.first.title);
                 }, child: Text("取"))
               ],
             ),

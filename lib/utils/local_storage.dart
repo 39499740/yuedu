@@ -1,3 +1,5 @@
+import 'package:sqflite/sqflite.dart';
+import 'package:yuedu/db/bookShelf.dart';
 import 'package:yuedu/utils/book_reptile.dart';
 
 class LocalStorage {
@@ -15,4 +17,28 @@ class LocalStorage {
     }
     return _instance!;
   }
+
+  late BookShelfProvider bookShelfProvider;
+
+  Future<void> setupLocalStorage() async {
+    bookShelfProvider = BookShelfProvider();
+    var databasePath = await getDatabasesPath();
+    String path = databasePath + "/book.db";
+    await bookShelfProvider.open(path);
+  }
+
+  insertBookToLocalstorage(BookInfo b){
+    bookShelfProvider.insert(b);
+  }
+
+  Future<BookInfo?> getBookFromLocalStorage(int id) async {
+    return await bookShelfProvider.getBookInfo(id);
+  }
+
+  Future<List<BookInfo>?>getAllBooksFromLocalStorage() async {
+    return await bookShelfProvider.getAllBooks();
+  }
+
 }
+
+

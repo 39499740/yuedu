@@ -8,6 +8,20 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.6.1"
+  battery:
+    dependency: "direct main"
+    description:
+      name: battery
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.0.3"
+  battery_platform_interface:
+    dependency: transitive
+    description:
+      name: battery_platform_interface
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.0.1"
   boolean_selector:
     dependency: transitive
     description:
@@ -99,6 +113,20 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "4.0.0"
+  extended_image:
+    dependency: "direct main"
+    description:
+      name: extended_image
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "4.1.0"
+  extended_image_library:
+    dependency: transitive
+    description:
+      name: extended_image_library
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "3.1.0"
   fake_async:
     dependency: transitive
     description:
@@ -132,6 +160,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_downloader:
+    dependency: "direct main"
+    description:
+      name: flutter_downloader
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.6.1"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -156,6 +191,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.13.3"
+  http_client_helper:
+    dependency: transitive
+    description:
+      name: http_client_helper
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.0.2"
   http_parser:
     dependency: transitive
     description:
@@ -322,6 +364,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  sn_progress_dialog:
+    dependency: "direct main"
+    description:
+      name: sn_progress_dialog
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "1.0.2"
   source_span:
     dependency: transitive
     description:
