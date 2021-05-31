@@ -10,7 +10,7 @@ class BookModel with ChangeNotifier{
   LocalStorage ls = LocalStorage();
 
   void updateShelf(){
-    _shelfBooks = ls.getShelf();
+    // _shelfBooks = ls.getShelf();
     notifyListeners();
   }
 
