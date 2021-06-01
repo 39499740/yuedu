@@ -13,11 +13,8 @@ class _BookShelfPageState extends State<BookShelfPage> {
   @override
   void initState() {
     super.initState();
-    Provider.of<BookModel>(context,listen: false).setupProvider();
+    Provider.of<BookModel>(context, listen: false).setupProvider();
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -28,18 +25,19 @@ class _BookShelfPageState extends State<BookShelfPage> {
         elevation: 0,
         title: Text(
           "书架",
-          style: TextStyle(
-              fontSize: ScreenTools.getSize(18), color: Color(0xff333333)),
+          style: TextStyle(color: Color(0xff333333)),
         ),
       ),
       body: Container(
         child: ListView.separated(
           itemBuilder: (context, index) {
-            return BookItemCell(b: Provider.of<BookModel>(context, listen: true).shelfBooks[index]);
+            return BookItemCell(
+                b: Provider.of<BookModel>(context, listen: true)
+                    .shelfBooks[index]);
           },
-            separatorBuilder: (BuildContext context, int index){
-              return Divider();
-            },
+          separatorBuilder: (BuildContext context, int index) {
+            return Divider();
+          },
           itemCount:
               Provider.of<BookModel>(context, listen: true).shelfBooks.length,
         ),

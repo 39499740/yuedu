@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:yuedu/model/bookModel.dart';
 import 'package:yuedu/model/pageModel.dart';
 import 'package:yuedu/pages/bookshelf/book_shelf_page.dart';
+import 'package:yuedu/pages/tab/tab_page.dart';
 import 'package:yuedu/read_page.dart';
 import 'package:yuedu/utils/global_data.dart';
 import 'package:yuedu/utils/local_storage.dart';
@@ -21,11 +22,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    setDesignWHD(375, 812);
-
-
-
-
+    setDesignWHD(1125, 2436);
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
@@ -43,7 +40,7 @@ class MyApp extends StatelessWidget {
 
           primarySwatch: Colors.blue,
         ),
-        home: BookShelfPage(),
+        home: TabPage(),
       ),
     );
   }
