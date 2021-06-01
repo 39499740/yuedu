@@ -10,18 +10,19 @@ class BookItemCell extends StatelessWidget {
 
   Widget _coverWidget() {
     return Container(
+      height: ScreenTools.getSize(315),
+      width: ScreenTools.getSize(240),
       child: ExtendedImage.network(
         b.imgUrl,
         cache: true,
-        height: ScreenTools.getSize(105),
-        width: ScreenTools.getSize(80),
+
       ),
     );
   }
 
   Widget _detailWidget() {
     return Container(
-      margin: EdgeInsets.only(left: ScreenTools.getSize(15)),
+      margin: EdgeInsets.only(left: ScreenTools.getSize(42)),
       alignment: Alignment.centerLeft,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -32,7 +33,7 @@ class BookItemCell extends StatelessWidget {
               maxLines: 1,
               softWrap: false,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: ScreenTools.getSize(16)),
+              style: TextStyle(fontSize: ScreenTools.getSize(50)),
             ),
           ),
           Container(
@@ -41,9 +42,9 @@ class BookItemCell extends StatelessWidget {
               maxLines: 1,
               softWrap: false,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: ScreenTools.getSize(16)),
+              style: TextStyle(fontSize: ScreenTools.getSize(40)),
             ),
-            margin: EdgeInsets.symmetric(vertical: ScreenTools.getSize(12)),
+            margin: EdgeInsets.symmetric(vertical: ScreenTools.getSize(35)),
           ),
           Container(
             child: Row(
@@ -51,9 +52,9 @@ class BookItemCell extends StatelessWidget {
                 Container(
                   child: Icon(
                     Icons.access_time,
-                    size: ScreenTools.getSize(12),
+                    size: ScreenTools.getSize(35),
                   ),
-                  margin: EdgeInsets.only(right: ScreenTools.getSize(4)),
+                  margin: EdgeInsets.only(right: ScreenTools.getSize(15)),
                 ),
                 Expanded(child: Container(
                   child: Text(
@@ -61,7 +62,7 @@ class BookItemCell extends StatelessWidget {
                     maxLines: 1,
                     softWrap: false,
                     overflow: TextOverflow.ellipsis,
-                    style: TextStyle(fontSize: ScreenTools.getSize(14)),
+                    style: TextStyle(fontSize: ScreenTools.getSize(35)),
                   ),
                 ))
               ],
@@ -76,8 +77,8 @@ class BookItemCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(
-          horizontal: ScreenTools.getSize(14),
-          vertical: ScreenTools.getSize(10)),
+          horizontal: ScreenTools.getSize(42),
+          vertical: ScreenTools.getSize(30)),
       child: Row(
         children: [_coverWidget(), Expanded(child: _detailWidget())],
       ),
