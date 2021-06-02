@@ -10,6 +10,9 @@ final String columnUpdateTime = "updateTime";
 final String columnDetail = "detail";
 final String columnLastUpdate = "lastUpdate";
 final String columnId = "_id";
+final String columnCTitle = "cTitle";
+final String columnCId = "cId";
+final String columnWordCount = "wordCount";
 
 final String tableBookShelf = "bookshelf";
 
@@ -33,7 +36,10 @@ create table $tableBookShelf (
   $columnUpdateTime text not null,
   $columnDetail text not null,
   $columnLastUpdate text not null,
-  $columnImgUrl text not null
+  $columnImgUrl text not null,
+  $columnCTitle text,
+  $columnCId int,
+  $columnWordCount int
   )
 ''');
     });
@@ -56,6 +62,9 @@ create table $tableBookShelf (
           columnUpdateTime,
           columnDetail,
           columnLastUpdate,
+          columnCTitle,
+          columnCId,
+          columnWordCount
         ],
         where: '$columnId = ?',
         whereArgs: [id]);
@@ -78,6 +87,9 @@ create table $tableBookShelf (
         columnUpdateTime,
         columnDetail,
         columnLastUpdate,
+        columnCTitle,
+        columnCId,
+        columnWordCount
       ],
     );
     List<BookInfo> bookList = [];
@@ -109,6 +121,9 @@ class BookInfo {
   late String updateTime;
   late String detail;
   late String lastUpdate;
+  String? bookmarkCatalogureTitle;
+  int? bookmarkCatalogureId;
+  int? bookmarkWordCount;
   int? id;
 
   Map<String, dynamic> toMap() {
@@ -121,6 +136,9 @@ class BookInfo {
       columnUpdateTime: updateTime,
       columnDetail: detail,
       columnLastUpdate: lastUpdate,
+      columnCTitle: bookmarkCatalogureTitle,
+      columnCId: bookmarkCatalogureId,
+      columnWordCount: bookmarkWordCount
     };
     print(id);
     if (id != null) {
@@ -141,6 +159,9 @@ class BookInfo {
     updateTime = map[columnUpdateTime];
     detail = map[columnDetail];
     lastUpdate = map[columnLastUpdate];
+    bookmarkCatalogureTitle = map[columnCTitle];
+    bookmarkCatalogureId = map[columnCId];
+    bookmarkWordCount = map[columnWordCount];
   }
 
   BookInfo fromElement(Element element) {

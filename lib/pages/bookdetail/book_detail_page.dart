@@ -218,8 +218,8 @@ class _BookDetailPageState extends State<BookDetailPage> {
                           .openBookInfo)) {
                 Provider.of<BookShelfModel>(context, listen: false)
                     .removeBookFromShelf(
-                    Provider.of<BookDetailModel>(context, listen: false)
-                        .openBookInfo);
+                        Provider.of<BookDetailModel>(context, listen: false)
+                            .openBookInfo);
               } else {
                 Provider.of<BookShelfModel>(context, listen: false)
                     .addBookToShelf(
@@ -227,9 +227,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
                             .openBookInfo);
               }
 
-              setState(() {
-
-              });
+              setState(() {});
             },
             child: Container(
               color: Colors.black12,
