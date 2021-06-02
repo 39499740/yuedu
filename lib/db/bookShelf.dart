@@ -1,6 +1,5 @@
 import 'package:html/dom.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:uuid/uuid.dart';
 
 final String columnImgUrl = "imageUrl";
 final String columnTitle = "title";
@@ -10,10 +9,13 @@ final String columnAuthor = "author";
 final String columnUpdateTime = "updateTime";
 final String columnDetail = "detail";
 final String columnLastUpdate = "lastUpdate";
-final String columnUuid = "uuid";
 final String columnId = "_id";
 
 final String tableBookShelf = "bookshelf";
+
+final String columnBookId = "bookid";
+final String columnContent = "content";
+final String tableBookCatalogue = "bookcatalogue";
 
 class BookShelfProvider {
   late Database db;
@@ -31,7 +33,6 @@ create table $tableBookShelf (
   $columnUpdateTime text not null,
   $columnDetail text not null,
   $columnLastUpdate text not null,
-  $columnUuid text not null,
   $columnImgUrl text not null
   )
 ''');
@@ -55,7 +56,6 @@ create table $tableBookShelf (
           columnUpdateTime,
           columnDetail,
           columnLastUpdate,
-          columnUuid
         ],
         where: '$columnId = ?',
         whereArgs: [id]);
@@ -78,7 +78,6 @@ create table $tableBookShelf (
         columnUpdateTime,
         columnDetail,
         columnLastUpdate,
-        columnUuid
       ],
     );
     List<BookInfo> bookList = [];
@@ -110,7 +109,6 @@ class BookInfo {
   late String updateTime;
   late String detail;
   late String lastUpdate;
-  late String uuid;
   int? id;
 
   Map<String, dynamic> toMap() {
@@ -123,7 +121,6 @@ class BookInfo {
       columnUpdateTime: updateTime,
       columnDetail: detail,
       columnLastUpdate: lastUpdate,
-      columnUuid: uuid
     };
     print(id);
     if (id != null) {
@@ -144,7 +141,6 @@ class BookInfo {
     updateTime = map[columnUpdateTime];
     detail = map[columnDetail];
     lastUpdate = map[columnLastUpdate];
-    uuid = map[columnUuid];
   }
 
   BookInfo fromElement(Element element) {
@@ -167,7 +163,49 @@ class BookInfo {
         element.querySelector(".uptime")!.text.replaceAll("更新时间：", "");
     b.lastUpdate = element.querySelector(".update")!.querySelector("a")!.text;
     b.detail = element.querySelector("p")!.text;
-    b.uuid = Uuid().v4();
     return b;
+  }
+}
+
+class BookCatalogue {
+  late String title;
+  late String link;
+  int? bookId;
+  late String content;
+  int? id;
+
+  Map<String, dynamic> toMap() {
+    var map = <String, dynamic>{
+      columnTitle: title,
+      columnLink: link,
+      columnBookId: bookId,
+      columnContent: content
+    };
+    if (id != null) {
+      map[columnId] = id;
+    }
+    return map;
+  }
+
+  BookCatalogue();
+
+  BookCatalogue.fromMap(Map map) {
+    title = map[columnTitle];
+    link = map[columnLink];
+    bookId = map[columnBookId];
+    content = map[columnContent];
+    id = map[columnId];
+  }
+
+  BookCatalogue fromElement(Element element, int? bookId) {
+    BookCatalogue bc = BookCatalogue();
+    bc.title = element.querySelector("a")!.text;
+    bc.link = "https://www.biquge7.com" +
+        element.querySelector("a")!.attributes['href'].toString();
+    bc.content = "";
+    if (bookId != null) {
+      bc.bookId = bookId;
+    }
+    return bc;
   }
 }

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:yuedu/model/bookModel.dart';
+import 'package:yuedu/model/bookShelfModel.dart';
 import 'package:yuedu/pages/bookshelf/widget/book_item.dart';
 import 'package:yuedu/utils/tools.dart';
 
@@ -13,7 +13,7 @@ class _BookShelfPageState extends State<BookShelfPage> {
   @override
   void initState() {
     super.initState();
-    Provider.of<BookModel>(context, listen: false).setupProvider();
+    Provider.of<BookShelfModel>(context, listen: false).setupProvider();
   }
 
   @override
@@ -32,14 +32,14 @@ class _BookShelfPageState extends State<BookShelfPage> {
         child: ListView.separated(
           itemBuilder: (context, index) {
             return BookItemCell(
-                b: Provider.of<BookModel>(context, listen: true)
+                b: Provider.of<BookShelfModel>(context, listen: true)
                     .shelfBooks[index]);
           },
           separatorBuilder: (BuildContext context, int index) {
             return Divider();
           },
           itemCount:
-              Provider.of<BookModel>(context, listen: true).shelfBooks.length,
+              Provider.of<BookShelfModel>(context, listen: true).shelfBooks.length,
         ),
       ),
     );

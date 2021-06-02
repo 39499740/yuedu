@@ -4,8 +4,12 @@ import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:yuedu/model/bookModel.dart';
+import 'package:yuedu/db/bookShelf.dart';
+import 'package:yuedu/model/bookDetailModel.dart';
+import 'package:yuedu/model/bookShelfModel.dart';
 import 'package:yuedu/model/pageModel.dart';
+import 'package:yuedu/pages/bookdetail/book_detail_catalogue_page.dart';
+import 'package:yuedu/pages/bookdetail/book_detail_page.dart';
 import 'package:yuedu/pages/bookshelf/book_shelf_page.dart';
 import 'package:yuedu/pages/tab/tab_page.dart';
 import 'package:yuedu/read_page.dart';
@@ -31,7 +35,10 @@ class MyApp extends StatelessWidget {
           },
         ),
         ChangeNotifierProvider(create: (context) {
-          return BookModel();
+          return BookShelfModel();
+        }),
+        ChangeNotifierProvider(create: (context) {
+          return BookDetailModel();
         })
       ],
       child: MaterialApp(
@@ -40,8 +47,35 @@ class MyApp extends StatelessWidget {
 
           primarySwatch: Colors.blue,
         ),
-        home: TabPage(),
-      ),
+          onGenerateRoute: (settings) {
+            if (settings.name == '/') {
+              return MaterialPageRoute(
+                  builder: (context) => TabPage(),
+                  settings: RouteSettings(name: settings.name));
+            }
+            var uri = Uri.parse(settings.name!);
+            switch (uri.pathSegments.first) {
+              // case "login":
+              //   return MaterialPageRoute(
+              //       builder: (context) => LoginPage(),
+              //       settings: RouteSettings(name: settings.name));
+              case "main":
+                return MaterialPageRoute(
+                    builder: (context) => TabPage(),
+                    settings: RouteSettings(name: settings.name));
+              case "bookDetail":
+                return MaterialPageRoute(
+                    builder: (context) => BookDetailPage(),
+                    settings: RouteSettings(name: settings.name));
+              case "bookDetailCatalogue":
+                return MaterialPageRoute(
+                    builder: (context) => BookDetailCataloguePage(),
+                    settings: RouteSettings(name: settings.name));
+            }
+            return MaterialPageRoute(
+                builder: (context) => TabPage(),
+                settings: RouteSettings(name: settings.name));
+          }),
     );
   }
 
