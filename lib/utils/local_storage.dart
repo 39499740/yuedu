@@ -27,8 +27,12 @@ class LocalStorage {
     await bookShelfProvider.open(path);
   }
 
-  insertBookToLocalstorage(BookInfo b){
-    bookShelfProvider.insert(b);
+  Future<BookInfo> insertBookToLocalstorage(BookInfo b) async {
+    return await bookShelfProvider.insert(b);
+  }
+
+  Future<void> deleteBookFromLocalStorage(BookInfo b) async {
+    await bookShelfProvider.delete(b.id!);
   }
 
   Future<BookInfo?> getBookFromLocalStorage(int id) async {
@@ -38,6 +42,8 @@ class LocalStorage {
   Future<List<BookInfo>?>getAllBooksFromLocalStorage() async {
     return await bookShelfProvider.getAllBooks();
   }
+
+
 
 }
 

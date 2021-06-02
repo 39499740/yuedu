@@ -23,4 +23,36 @@ class BookShelfModel with ChangeNotifier {
     _shelfBooks = (await ls.getAllBooksFromLocalStorage())!;
     notifyListeners();
   }
+
+  bool isBookExist(BookInfo b){
+    bool exist = false;
+    for(BookInfo book in _shelfBooks){
+      if (b.link == book.link){
+        exist = true;
+        break;
+      }
+    }
+    return exist;
+
+  }
+
+  Future<void> addBookToShelf(BookInfo b) async {
+    LocalStorage ls = LocalStorage();
+    BookInfo book =  await ls.insertBookToLocalstorage(b);
+    _shelfBooks.insert(0, book);
+    notifyListeners();
+  }
+
+  Future<void> removeBookFromShelf(BookInfo b) async {
+    LocalStorage ls = LocalStorage();
+    await ls.deleteBookFromLocalStorage(b);
+    for(BookInfo book in _shelfBooks){
+      if (b.id == book.id){
+        _shelfBooks.remove(book);
+        break;
+      }
+    }
+    notifyListeners();
+  }
+
 }
