@@ -2,6 +2,7 @@ import 'package:html/parser.dart' show parse;
 
 import 'package:http/http.dart' as http;
 import 'package:yuedu/db/bookShelf.dart';
+import 'package:yuedu/utils/tools.dart';
 
 
 class BookReptile {
@@ -31,5 +32,14 @@ class BookReptile {
 
     return resultList;
   }
+
+  static Future<String> getBookContentWithCatalouge(BookCatalogue bc) async {
+    var url = Uri.parse(bc.link);
+    var response = await http.get(url);
+    var document = parse(response.body);
+    var contentSource = document.querySelector("#content")!.innerHtml.toString();
+    return Utils.getStrWithOutHTML(contentSource);
+  }
+
 }
 

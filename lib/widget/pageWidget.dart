@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:yuedu/model/pageModel.dart';
-import 'package:yuedu/utils/Paging_tools.dart';
+import 'package:yuedu/model/bookDetailModel.dart';
 import 'package:yuedu/utils/tools.dart';
 
 import '../textfile.dart';
@@ -16,54 +15,40 @@ class PageWidget extends StatefulWidget {
 }
 
 class _PageWidgetState extends State<PageWidget> {
+  List<String> pageStrList = [];
+  bool isFirstOpen = true;
+
   @override
   void initState() {
     super.initState();
   }
+  setup(){
+    isFirstOpen = false;
 
-  List<String> pageStrList = [];
-  bool firstBuild = true;
+      Timer(Duration(milliseconds: 500), () {
+        Provider.of<BookDetailModel>(context, listen: false)
+            .setupWH(context.size!.width, context.size!.height);
+        Provider.of<BookDetailModel>(context, listen: false).refreshBook();
+      });
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
-    if (Provider.of<PageModel>(context, listen: false).pageWidth == 0) {
-      firstBuild = false;
-      Timer(Duration(milliseconds: 100), () {
-        Provider.of<PageModel>(context, listen: false)
-            .setTextAreaWH(context.size!.width, context.size!.height);
-        pageStrList = PagingTool.pagingContent(bookStr, ScreenTools.getSize(16),
-            context.size!.width, context.size!.height);
-        Provider.of<PageModel>(context, listen: false)
-            .setupChapterData(pageStrList.length, "标题");
-        setState(() {});
-      });
-    } else if (firstBuild) {
-      pageStrList = PagingTool.pagingContent(bookStr, ScreenTools.getSize(16),
-          context.size!.width, context.size!.height);
-      Provider.of<PageModel>(context, listen: false)
-          .setupChapterData(pageStrList.length, "标题");
-      firstBuild = false;
-      setState(() {});
+    if(isFirstOpen){
+      setup();
+      print(ScreenTools.getSize(30));
     }
-    return PageView.builder(
-      itemBuilder: (context, index) {
-        return Container(
+    return Stack(
+      children: [
+        Container(
           child: Text(
-            Provider.of<PageModel>(context, listen: false).pageWidth == 0
-                ? ""
-                : pageStrList[index],
-            softWrap: true,
-            style: TextStyle(fontSize: ScreenTools.getSize(16), height: 2),
+            Provider.of<BookDetailModel>(context, listen: true).showStr,
+            style: TextStyle(fontSize: ScreenTools.getSize(50), height: 2),
           ),
-        );
-      },
-      itemCount: Provider.of<PageModel>(context, listen: false).pageWidth == 0
-          ? 1
-          : pageStrList.length,
-      onPageChanged: (int index) {
-        Provider.of<PageModel>(context, listen: false)
-            .updateNowPageNum(index + 1);
-      },
+        )
+      ],
     );
   }
 }

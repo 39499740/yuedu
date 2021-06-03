@@ -1,3 +1,4 @@
+
 import 'dart:ui';
 
 import 'package:extended_image/extended_image.dart';
@@ -39,7 +40,6 @@ class _BookDetailPageState extends State<BookDetailPage> {
   }
 
   Widget _bookDetailWidget() {
-    print(ScreenTools.getStatusBarHeight());
     return Container(
       width: double.infinity,
       height: ScreenTools.getSize(768) + ScreenTools.getStatusBarHeight(),
@@ -245,7 +245,9 @@ class _BookDetailPageState extends State<BookDetailPage> {
           Expanded(
               child: GestureDetector(
             behavior: HitTestBehavior.translucent,
-            onTap: () {},
+            onTap: () {
+              Navigator.pushNamed(context, "/read");
+            },
             child: Container(
               color: Colors.red,
               alignment: Alignment.center,

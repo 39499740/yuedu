@@ -7,12 +7,11 @@ import 'package:provider/provider.dart';
 import 'package:yuedu/db/bookShelf.dart';
 import 'package:yuedu/model/bookDetailModel.dart';
 import 'package:yuedu/model/bookShelfModel.dart';
-import 'package:yuedu/model/pageModel.dart';
 import 'package:yuedu/pages/bookdetail/book_detail_catalogue_page.dart';
 import 'package:yuedu/pages/bookdetail/book_detail_page.dart';
 import 'package:yuedu/pages/bookshelf/book_shelf_page.dart';
+import 'package:yuedu/pages/read/read_page.dart';
 import 'package:yuedu/pages/tab/tab_page.dart';
-import 'package:yuedu/read_page.dart';
 import 'package:yuedu/utils/global_data.dart';
 import 'package:yuedu/utils/local_storage.dart';
 import 'package:yuedu/utils/tools.dart';
@@ -29,11 +28,6 @@ class MyApp extends StatelessWidget {
     setDesignWHD(1125, 2436);
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (context) {
-            return PageModel();
-          },
-        ),
         ChangeNotifierProvider(create: (context) {
           return BookShelfModel();
         }),
@@ -70,6 +64,10 @@ class MyApp extends StatelessWidget {
               case "bookDetailCatalogue":
                 return MaterialPageRoute(
                     builder: (context) => BookDetailCataloguePage(),
+                    settings: RouteSettings(name: settings.name));
+              case "read":
+                return MaterialPageRoute(
+                    builder: (context) => ReadPage(),
                     settings: RouteSettings(name: settings.name));
             }
             return MaterialPageRoute(

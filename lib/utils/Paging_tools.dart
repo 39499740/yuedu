@@ -5,11 +5,13 @@ import 'package:yuedu/utils/tools.dart';
 class PagingTool {
   static List<String> pagingContent(
       String content, double textSize, width, height) {
+    print(textSize);
     List<String> pageList = [];
     int count = 1;
     bool getCount = false;
     while (true) {
       if (count > content.length) {
+
         pageList.add(content);
         break;
       }

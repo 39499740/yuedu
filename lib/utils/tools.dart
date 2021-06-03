@@ -48,6 +48,28 @@ class Utils {
     var str = JsonUtil.encodeObj(old);
     return json.decode(str!);
   }
+
+  static String getStrWithOutHTML(String oldStr){
+    String newStr = oldStr;
+    newStr = newStr.replaceAll("<br>", "\n");
+    newStr = newStr.replaceAll("<br/>", "\n");
+    newStr = newStr.replaceAll("<br />", "\n");
+    newStr = newStr.replaceAll("&nbsp;", " ");
+    newStr = newStr.replaceAll("&mdash;", "——");
+    newStr = newStr.replaceAll("&hellip;", "…");
+    newStr = newStr.replaceAll("&middot;", "·");
+
+    newStr = newStr.replaceAll("&quot;", "\"");
+    newStr = newStr.replaceAll("&ldquo;", "\“");
+    newStr = newStr.replaceAll("&rdquo;", "\”");
+    newStr = newStr.replaceAll("&amp;", "&");
+    newStr = newStr.replaceAll("&lt;", "<");
+    newStr = newStr.replaceAll("&gt;", ">");
+    newStr = newStr.replaceAll("&apos;", "'");
+
+    newStr = newStr.replaceAll("\n\n", "\n");
+    return newStr;
+  }
 }
 
 class Network {
