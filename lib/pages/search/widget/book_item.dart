@@ -1,11 +1,10 @@
-
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:yuedu/db/bookShelf.dart';
 import 'package:yuedu/model/bookDetailModel.dart';
+import 'package:yuedu/model/bookShelfModel.dart';
 import 'package:yuedu/utils/tools.dart';
-
 
 class BookItemCell extends StatelessWidget {
   BookInfo b;
@@ -13,14 +12,12 @@ class BookItemCell extends StatelessWidget {
   BookItemCell({Key? key, required this.b}) : super(key: key);
 
   Widget _coverWidget() {
-
     return Container(
       height: ScreenTools.getSize(240),
       width: ScreenTools.getSize(180),
       child: ExtendedImage.network(
         b.imgUrl,
         cache: true,
-
       ),
     );
   }
@@ -68,9 +65,19 @@ class BookItemCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
-        Provider.of<BookDetailModel>(context,listen: false).openBook(b);
-        Navigator.pushNamed(context, "/bookDetail",);
+      onTap: () {
+        BookInfo tempBook = Provider.of<BookShelfModel>(context, listen: false)
+            .getBookInfoWithLink(b.link);
+        if (tempBook.id != null) {
+          Provider.of<BookDetailModel>(context, listen: false)
+              .openBook(tempBook);
+        } else {
+          Provider.of<BookDetailModel>(context, listen: false).openBook(b);
+        }
+        Navigator.pushNamed(
+          context,
+          "/bookDetail",
+        );
       },
       behavior: HitTestBehavior.translucent,
       child: Container(

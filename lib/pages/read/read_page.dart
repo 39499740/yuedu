@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:yuedu/model/bookDetailModel.dart';
+import 'package:yuedu/model/bookShelfModel.dart';
 import 'package:yuedu/pages/read/battery_widget.dart';
 import 'package:yuedu/utils/tools.dart';
 import 'package:yuedu/widget/pageWidget.dart';
@@ -87,6 +88,11 @@ class _ReadPageState extends State<ReadPage> {
                       .jumpToCatalogue(
                           Provider.of<BookDetailModel>(context, listen: false)
                               .nowCatalogueIndex!);
+                  Provider.of<BookShelfModel>(context)
+                      .updateBookInfo(Provider.of<BookDetailModel>(
+                      context,
+                      listen: false)
+                      .openBookInfo);
                 }
               },
               behavior: HitTestBehavior.translucent,
@@ -125,6 +131,11 @@ class _ReadPageState extends State<ReadPage> {
               onChangeEnd: (v) {
                 Provider.of<BookDetailModel>(context, listen: false)
                     .jumpToCatalogue(v.toInt());
+                Provider.of<BookShelfModel>(context)
+                    .updateBookInfo(Provider.of<BookDetailModel>(
+                    context,
+                    listen: false)
+                    .openBookInfo);
               },
             ),
           )),
@@ -141,6 +152,11 @@ class _ReadPageState extends State<ReadPage> {
                           Provider.of<BookDetailModel>(context, listen: false)
                                   .nowCatalogueIndex! +
                               2);
+                  Provider.of<BookShelfModel>(context)
+                      .updateBookInfo(Provider.of<BookDetailModel>(
+                      context,
+                      listen: false)
+                      .openBookInfo);
                 }
               },
               behavior: HitTestBehavior.translucent,
@@ -216,6 +232,11 @@ class _ReadPageState extends State<ReadPage> {
                               Provider.of<BookDetailModel>(context,
                                       listen: false)
                                   .pageTurning(false);
+                              Provider.of<BookShelfModel>(context)
+                                  .updateBookInfo(Provider.of<BookDetailModel>(
+                                          context,
+                                          listen: false)
+                                      .openBookInfo);
                             },
                             child: Container(),
                           )),
@@ -236,6 +257,11 @@ class _ReadPageState extends State<ReadPage> {
                                     Provider.of<BookDetailModel>(context,
                                             listen: false)
                                         .pageTurning(true);
+                                    Provider.of<BookShelfModel>(context)
+                                        .updateBookInfo(Provider.of<BookDetailModel>(
+                                        context,
+                                        listen: false)
+                                        .openBookInfo);
                                   },
                                   child: Container()))
                         ],

@@ -10,10 +10,21 @@ class BookShelfModel with ChangeNotifier {
 
   LocalStorage ls = LocalStorage();
 
-
-
   void updateShelf() {
     // _shelfBooks = ls.getShelf();
+    notifyListeners();
+  }
+
+  void updateBookInfo(BookInfo b) {
+    LocalStorage ls = LocalStorage();
+    ls.updateBookInfoinLocalStorage(b);
+    for (BookInfo book in _shelfBooks) {
+      if (b.link == book.link) {
+        _shelfBooks.remove(book);
+        _shelfBooks.insert(0, b);
+        break;
+      }
+    }
     notifyListeners();
   }
 
@@ -24,35 +35,46 @@ class BookShelfModel with ChangeNotifier {
     notifyListeners();
   }
 
-  bool isBookExist(BookInfo b){
+  bool isBookExist(BookInfo b) {
     bool exist = false;
-    for(BookInfo book in _shelfBooks){
-      if (b.link == book.link){
+    for (BookInfo book in _shelfBooks) {
+      if (b.link == book.link) {
         exist = true;
         break;
       }
     }
     return exist;
-
   }
 
-  Future<void> addBookToShelf(BookInfo b) async {
+  Future<BookInfo> addBookToShelf(BookInfo b) async {
     LocalStorage ls = LocalStorage();
-    BookInfo book =  await ls.insertBookToLocalstorage(b);
+    BookInfo book = await ls.insertBookToLocalstorage(b);
     _shelfBooks.insert(0, book);
     notifyListeners();
+    return book;
+
   }
 
   Future<void> removeBookFromShelf(BookInfo b) async {
     LocalStorage ls = LocalStorage();
     await ls.deleteBookFromLocalStorage(b);
-    for(BookInfo book in _shelfBooks){
-      if (b.id == book.id){
+    for (BookInfo book in _shelfBooks) {
+      if (b.id == book.id) {
         _shelfBooks.remove(book);
         break;
       }
     }
+
     notifyListeners();
   }
 
+  BookInfo getBookInfoWithLink(String link) {
+    for (BookInfo book in _shelfBooks) {
+      if (link == book.link) {
+        return book;
+
+      }
+    }
+    return BookInfo();
+  }
 }

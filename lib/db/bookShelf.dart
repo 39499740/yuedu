@@ -13,6 +13,7 @@ final String columnId = "_id";
 final String columnCTitle = "cTitle";
 final String columnCId = "cId";
 final String columnWordCount = "wordCount";
+final String columnLastOpen = "lastopen";
 
 final String tableBookShelf = "bookshelf";
 
@@ -39,13 +40,15 @@ create table $tableBookShelf (
   $columnImgUrl text not null,
   $columnCTitle text,
   $columnCId int,
-  $columnWordCount int
+  $columnWordCount int,
+  $columnLastOpen int 
   )
 ''');
     });
   }
 
   Future<BookInfo> insert(BookInfo info) async {
+    info.lastOpen = DateTime.now().millisecondsSinceEpoch;
     info.id = await db.insert(tableBookShelf, info.toMap());
     return info;
   }
@@ -64,7 +67,8 @@ create table $tableBookShelf (
           columnLastUpdate,
           columnCTitle,
           columnCId,
-          columnWordCount
+          columnWordCount,
+          columnLastOpen,
         ],
         where: '$columnId = ?',
         whereArgs: [id]);
@@ -89,8 +93,10 @@ create table $tableBookShelf (
         columnLastUpdate,
         columnCTitle,
         columnCId,
-        columnWordCount
+        columnWordCount,
+        columnLastOpen,
       ],
+      orderBy: '$columnLastOpen DESC',
     );
     List<BookInfo> bookList = [];
     for (Map m in maps) {
@@ -105,6 +111,7 @@ create table $tableBookShelf (
   }
 
   Future<int> update(BookInfo info) async {
+    info.lastOpen = DateTime.now().millisecondsSinceEpoch;
     return await db.update(tableBookShelf, info.toMap(),
         where: '$columnId = ?', whereArgs: [info.id]);
   }
@@ -121,6 +128,7 @@ class BookInfo {
   late String updateTime;
   late String detail;
   late String lastUpdate;
+  int? lastOpen;
   String? bookmarkCatalogureTitle;
   int? bookmarkCatalogureId;
   int? bookmarkWordCount;
@@ -138,7 +146,8 @@ class BookInfo {
       columnLastUpdate: lastUpdate,
       columnCTitle: bookmarkCatalogureTitle,
       columnCId: bookmarkCatalogureId,
-      columnWordCount: bookmarkWordCount
+      columnWordCount: bookmarkWordCount,
+      columnLastOpen: lastOpen
     };
     print(id);
     if (id != null) {
@@ -162,6 +171,7 @@ class BookInfo {
     bookmarkCatalogureTitle = map[columnCTitle];
     bookmarkCatalogureId = map[columnCId];
     bookmarkWordCount = map[columnWordCount];
+    lastOpen = map[columnLastOpen];
   }
 
   BookInfo fromElement(Element element) {

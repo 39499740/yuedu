@@ -31,6 +31,15 @@ class LocalStorage {
     return await bookShelfProvider.insert(b);
   }
 
+  Future<BookCatalogue> insertBookCatalogueToLocalStorage(BookInfo b,List<BookCatalogue> bcl){
+    //TODO: 批量加入章节列表
+    return
+  }
+
+  Future<void> updateBookInfoinLocalStorage(BookInfo b) async{
+    await bookShelfProvider.update(b);
+  }
+
   Future<void> deleteBookFromLocalStorage(BookInfo b) async {
     await bookShelfProvider.delete(b.id!);
   }

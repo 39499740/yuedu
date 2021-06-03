@@ -6,6 +6,7 @@ import 'package:yuedu/db/bookShelf.dart';
 import 'package:yuedu/pages/bookdetail/book_detail_page.dart';
 import 'package:yuedu/utils/Paging_tools.dart';
 import 'package:yuedu/utils/book_reptile.dart';
+import 'package:yuedu/utils/local_storage.dart';
 import 'package:yuedu/utils/tools.dart';
 
 class BookDetailModel with ChangeNotifier {
@@ -55,6 +56,12 @@ class BookDetailModel with ChangeNotifier {
   double get catalogureSliderValue => _catalogureSliderValue;
 
   Set _cacheSet = {};
+
+  void addCatalogureToLocalStorage(){
+    LocalStorage ls = LocalStorage();
+    ls.insertBookToLocalstorage(b)
+  }
+
 
   Future<void> updateTotalData() async {
     _batteryLevel = await Battery().batteryLevel;
@@ -121,6 +128,20 @@ class BookDetailModel with ChangeNotifier {
     _showStr = _nowStrList[_nowPage - 1];
     _catalogureSliderValue = _nowCatalogueIndex! + 1;
     cacheContent();
+    if (_openBookInfo.id != null) {
+      _openBookInfo.bookmarkCatalogureId =
+          _openBookCatalogue[_nowCatalogueIndex!].id!;
+      _openBookInfo.bookmarkCatalogureTitle =
+          _openBookCatalogue[_nowCatalogueIndex!].title;
+      int tempWordCount = 0;
+      for (int i = 0; i < _nowStrList.length; i++) {
+        if (i < _nowPage - 1) {
+          tempWordCount += _nowStrList[i].length;
+        }
+      }
+      _openBookInfo.bookmarkWordCount = tempWordCount;
+    }
+
     notifyListeners();
   }
 
@@ -146,11 +167,13 @@ class BookDetailModel with ChangeNotifier {
 
   void readViewDispose() {
     _showStr = "正在加载数据……";
+    _nowCatalogueIndex = null;
     _textAreaHeight = 0;
     _textAreaWidth = 0;
     _totalPage = null;
     _nowPage = 0;
     _nowStrList = [];
+    _catalogureSliderValue = 1;
   }
 
   void setupWH(double width, height) {
@@ -160,6 +183,7 @@ class BookDetailModel with ChangeNotifier {
 
   Future<void> refreshBook() async {
     BotToast.showLoading();
+
     if (_nowCatalogueIndex == null) {
       if (_openBookInfo.bookmarkCatalogureId != null) {
         for (int i = 0; i < _openBookCatalogue.length; i++) {
@@ -197,6 +221,13 @@ class BookDetailModel with ChangeNotifier {
     _showStr = _nowStrList[_nowPage - 1];
     _catalogureSliderValue = _nowCatalogueIndex! + 1;
     cacheContent();
+    if (_openBookInfo.id != null) {
+      _openBookInfo.bookmarkCatalogureId =
+          _openBookCatalogue[_nowCatalogueIndex!].id!;
+      _openBookInfo.bookmarkCatalogureTitle =
+          _openBookCatalogue[_nowCatalogueIndex!].title;
+      _openBookInfo.bookmarkWordCount = 0;
+    }
     notifyListeners();
     BotToast.closeAllLoading();
   }

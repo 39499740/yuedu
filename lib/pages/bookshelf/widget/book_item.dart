@@ -1,6 +1,9 @@
+
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:yuedu/db/bookShelf.dart';
+import 'package:yuedu/model/bookDetailModel.dart';
 import 'package:yuedu/utils/tools.dart';
 
 class BookItemCell extends StatelessWidget {
@@ -75,12 +78,19 @@ class BookItemCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.symmetric(
-          horizontal: ScreenTools.getSize(42),
-          vertical: ScreenTools.getSize(30)),
-      child: Row(
-        children: [_coverWidget(), Expanded(child: _detailWidget())],
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: (){
+        Provider.of<BookDetailModel>(context,listen: false).openBook(b);
+        Navigator.pushNamed(context, "/read");
+      },
+      child: Container(
+        margin: EdgeInsets.symmetric(
+            horizontal: ScreenTools.getSize(42),
+            vertical: ScreenTools.getSize(30)),
+        child: Row(
+          children: [_coverWidget(), Expanded(child: _detailWidget())],
+        ),
       ),
     );
   }

@@ -1,4 +1,3 @@
-
 import 'dart:ui';
 
 import 'package:extended_image/extended_image.dart';
@@ -211,7 +210,7 @@ class _BookDetailPageState extends State<BookDetailPage> {
           Expanded(
               child: GestureDetector(
             behavior: HitTestBehavior.translucent,
-            onTap: () {
+            onTap: () async {
               if (Provider.of<BookShelfModel>(context, listen: false)
                   .isBookExist(
                       Provider.of<BookDetailModel>(context, listen: false)
@@ -220,11 +219,24 @@ class _BookDetailPageState extends State<BookDetailPage> {
                     .removeBookFromShelf(
                         Provider.of<BookDetailModel>(context, listen: false)
                             .openBookInfo);
+                BookInfo b =
+                    Provider.of<BookDetailModel>(context, listen: false)
+                        .openBookInfo;
+                b.id = null;
+                b.bookmarkWordCount = null;
+                b.bookmarkCatalogureTitle = null;
+                b.bookmarkCatalogureId = null;
+                Provider.of<BookDetailModel>(context, listen: false)
+                    .openBook(b);
               } else {
-                Provider.of<BookShelfModel>(context, listen: false)
-                    .addBookToShelf(
-                        Provider.of<BookDetailModel>(context, listen: false)
-                            .openBookInfo);
+                BookInfo b =
+                    await Provider.of<BookShelfModel>(context, listen: false)
+                        .addBookToShelf(
+                            Provider.of<BookDetailModel>(context, listen: false)
+                                .openBookInfo);
+
+                Provider.of<BookDetailModel>(context, listen: false)
+                    .openBook(b);
               }
 
               setState(() {});
