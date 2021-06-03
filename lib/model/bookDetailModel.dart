@@ -54,6 +54,8 @@ class BookDetailModel with ChangeNotifier {
 
   double get catalogureSliderValue => _catalogureSliderValue;
 
+  Set _cacheSet = {};
+
   Future<void> updateTotalData() async {
     _batteryLevel = await Battery().batteryLevel;
     _dateTimeShow = DateUtil.formatDate(DateTime.now(), format: "HH:mm");
@@ -62,11 +64,10 @@ class BookDetailModel with ChangeNotifier {
 
   void jumpToCatalogue(int index) {
     _nowCatalogueIndex = index - 1;
-    print(_nowCatalogueIndex);
     refreshBook();
   }
 
-  void updateSliderValue(double v){
+  void updateSliderValue(double v) {
     _catalogureSliderValue = v;
     notifyListeners();
   }
@@ -111,7 +112,6 @@ class BookDetailModel with ChangeNotifier {
               _textAreaWidth,
               _textAreaHeight);
           _totalPage = _nowStrList.length;
-          print(totalPage);
           _nowPage = totalPage!;
         }
       } else {
@@ -120,8 +120,28 @@ class BookDetailModel with ChangeNotifier {
     }
     _showStr = _nowStrList[_nowPage - 1];
     _catalogureSliderValue = _nowCatalogueIndex! + 1;
-
+    cacheContent();
     notifyListeners();
+  }
+
+  void cacheContent() {
+    for (int i = _nowCatalogueIndex! - 5; i < _nowCatalogueIndex! + 5; i++) {
+      if (i > 0 && i < _openBookCatalogue.length) {
+        getContent(i);
+      }
+    }
+  }
+
+  Future<void> getContent(int index) async {
+    BookCatalogue bc = _openBookCatalogue[index];
+    if (bc.content == "") {
+      if (!_cacheSet.contains(bc)) {
+        _cacheSet.add(bc.link);
+        bc.content = await BookReptile.getBookContentWithCatalouge(bc);
+        _openBookCatalogue[index] = bc;
+        _cacheSet.remove(bc.link);
+      }
+    }
   }
 
   void readViewDispose() {
@@ -136,10 +156,10 @@ class BookDetailModel with ChangeNotifier {
   void setupWH(double width, height) {
     _textAreaWidth = width;
     _textAreaHeight = height;
-    print(_textAreaWidth.toString() + "----" + _textAreaHeight.toString());
   }
 
   Future<void> refreshBook() async {
+    BotToast.showLoading();
     if (_nowCatalogueIndex == null) {
       if (_openBookInfo.bookmarkCatalogureId != null) {
         for (int i = 0; i < _openBookCatalogue.length; i++) {
@@ -176,7 +196,9 @@ class BookDetailModel with ChangeNotifier {
     }
     _showStr = _nowStrList[_nowPage - 1];
     _catalogureSliderValue = _nowCatalogueIndex! + 1;
+    cacheContent();
     notifyListeners();
+    BotToast.closeAllLoading();
   }
 
   void openBook(BookInfo b) {

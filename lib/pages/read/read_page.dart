@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
@@ -178,7 +179,7 @@ class _ReadPageState extends State<ReadPage> {
                   alignment: Alignment.centerLeft,
                   height: ScreenTools.getSize(106),
                   width: double.infinity,
-                  child: Text(
+                  child: AutoSizeText(
                     Provider.of<BookDetailModel>(context, listen: true)
                                 .nowCatalogueIndex ==
                             null
@@ -189,6 +190,7 @@ class _ReadPageState extends State<ReadPage> {
                                     listen: true)
                                 .nowCatalogueIndex!]
                             .title,
+                    maxLines: 1,
                     style: TextStyle(
                         fontSize: ScreenTools.getSize(47),
                         fontWeight: FontWeight.w200),

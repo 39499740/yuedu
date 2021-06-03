@@ -9,6 +9,7 @@ class BookReptile {
   static Future<List<BookInfo>> getBookListWithKeyWord(String keyWorld) async {
     List<BookInfo> searchResultList = [];
     var url = Uri.parse('https://www.biquge7.com/s?q=' + keyWorld);
+    print('https://www.biquge7.com/s?q=' + keyWorld);
     var response = await http.get(url);
     var document = parse(response.body);
 
@@ -34,6 +35,7 @@ class BookReptile {
   }
 
   static Future<String> getBookContentWithCatalouge(BookCatalogue bc) async {
+    print("正在解析：${bc.title}");
     var url = Uri.parse(bc.link);
     var response = await http.get(url);
     var document = parse(response.body);
