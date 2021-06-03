@@ -54,6 +54,7 @@ class Utils {
 
   static String getStrWithOutHTML(String oldStr){
     String newStr = oldStr;
+    newStr = newStr.replaceAll("请记住本书首发域名：www.biquge7.com。笔趣阁手机版更新最快网址：m.biquge7.com", "");
     newStr = newStr.replaceAll("<br>", "\n");
     newStr = newStr.replaceAll("<br/>", "\n");
     newStr = newStr.replaceAll("<br />", "\n");
@@ -70,6 +71,8 @@ class Utils {
     newStr = newStr.replaceAll("&gt;", ">");
     newStr = newStr.replaceAll("&apos;", "'");
 
+    newStr = newStr.replaceAll("\n\n", "\n");
+    newStr = newStr.replaceAll("\n\n", "\n");
     newStr = newStr.replaceAll("\n\n", "\n");
     return newStr;
   }
