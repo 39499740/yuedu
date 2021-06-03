@@ -1,5 +1,6 @@
 import 'package:battery/battery.dart';
 import 'package:bot_toast/bot_toast.dart';
+import 'package:flustars/flustars.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:yuedu/db/bookShelf.dart';
 import 'package:yuedu/pages/bookdetail/book_detail_page.dart';
@@ -11,9 +12,6 @@ class BookDetailModel with ChangeNotifier {
   late BookInfo _openBookInfo = BookInfo();
 
   BookInfo get openBookInfo => _openBookInfo;
-  int _batteryLevel = 0;
-
-  int get batteryLevel => _batteryLevel;
 
   List<BookCatalogue> _openBookCatalogue = [];
 
@@ -44,8 +42,36 @@ class BookDetailModel with ChangeNotifier {
 
   List<String> get nowStrList => _nowStrList;
 
-  Future<void> pageTurning(bool pageDown) async {
+  int _batteryLevel = 1;
+
+  int get batteryLevel => _batteryLevel;
+
+  String _dateTimeShow = "";
+
+  String get dateTimeShow => _dateTimeShow;
+
+  double _catalogureSliderValue = 1;
+
+  double get catalogureSliderValue => _catalogureSliderValue;
+
+  Future<void> updateTotalData() async {
     _batteryLevel = await Battery().batteryLevel;
+    _dateTimeShow = DateUtil.formatDate(DateTime.now(), format: "HH:mm");
+    notifyListeners();
+  }
+
+  void jumpToCatalogue(int index) {
+    _nowCatalogueIndex = index - 1;
+    print(_nowCatalogueIndex);
+    refreshBook();
+  }
+
+  void updateSliderValue(double v){
+    _catalogureSliderValue = v;
+    notifyListeners();
+  }
+
+  Future<void> pageTurning(bool pageDown) async {
     if (pageDown) {
       if (_nowPage == totalPage) {
         if (_nowCatalogueIndex == _openBookCatalogue.length - 1) {
@@ -90,9 +116,11 @@ class BookDetailModel with ChangeNotifier {
       } else {
         _nowPage--;
       }
-      _showStr = _nowStrList[_nowPage - 1];
-      notifyListeners();
     }
+    _showStr = _nowStrList[_nowPage - 1];
+    _catalogureSliderValue = _nowCatalogueIndex! + 1;
+
+    notifyListeners();
   }
 
   void readViewDispose() {
@@ -111,16 +139,17 @@ class BookDetailModel with ChangeNotifier {
   }
 
   Future<void> refreshBook() async {
-    if (_openBookInfo.bookmarkCatalogureId != null) {
-      for (int i = 0; i < _openBookCatalogue.length; i++) {
-        if (_openBookCatalogue[i].id == _openBookInfo.bookmarkCatalogureId) {
-          _nowCatalogueIndex = i;
-          break;
-        }
-      }
-    }
     if (_nowCatalogueIndex == null) {
-      _nowCatalogueIndex = 0;
+      if (_openBookInfo.bookmarkCatalogureId != null) {
+        for (int i = 0; i < _openBookCatalogue.length; i++) {
+          if (_openBookCatalogue[i].id == _openBookInfo.bookmarkCatalogureId) {
+            _nowCatalogueIndex = i;
+            break;
+          }
+        }
+      } else {
+        _nowCatalogueIndex = 0;
+      }
     }
     if (_openBookCatalogue[_nowCatalogueIndex!].content == "") {
       _openBookCatalogue[_nowCatalogueIndex!].content =
@@ -145,7 +174,7 @@ class BookDetailModel with ChangeNotifier {
       _nowPage = 1;
     }
     _showStr = _nowStrList[_nowPage - 1];
-
+    _catalogureSliderValue = _nowCatalogueIndex! + 1;
     notifyListeners();
   }
 

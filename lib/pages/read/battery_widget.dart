@@ -16,13 +16,13 @@ class BatteryWidget extends StatelessWidget {
       height: ScreenTools.getSize(28),
       child: Row(
         children: [
-          Container(
-            padding: EdgeInsets.all(ScreenTools.getSize(4)),
-            decoration: BoxDecoration(
-              border: Border.all(
-                  color: Color(0xff333333), width: ScreenTools.getSize(4)),
-            ),
-            child: Expanded(
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.all(ScreenTools.getSize(4)),
+              decoration: BoxDecoration(
+                border: Border.all(
+                    color: Color(0xff333333), width: ScreenTools.getSize(4)),
+              ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -32,11 +32,8 @@ class BatteryWidget extends StatelessWidget {
                       child: Container(
                         color: Color(0xff333333),
                       )),
-                  Expanded(
-                      flex: 100 -
-                          Provider.of<BookDetailModel>(context, listen: true)
-                              .batteryLevel,
-                      child: Container())
+                  Expanded(flex: 100-Provider.of<BookDetailModel>(context, listen: true)
+                      .batteryLevel, child: Container())
                 ],
               ),
             ),

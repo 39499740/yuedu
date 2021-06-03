@@ -11,6 +11,7 @@ class ScreenTools {
 
   static double getScreenBottomBarHeight() {
     return ScreenUtil.getInstance().bottomBarHeight;
+
   }
 
   static double getSize(double inSize) {
@@ -29,6 +30,8 @@ class ScreenTools {
   static double getAppBarHeight(){
     return ScreenUtil.getInstance().appBarHeight;
   }
+
+
 
   //获取比屏幕小XXX的宽度
   static double getWidthFromScreen(double width) {

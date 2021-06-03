@@ -1,5 +1,5 @@
-import 'package:battery/battery.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 import 'package:yuedu/model/bookDetailModel.dart';
 import 'package:yuedu/pages/read/battery_widget.dart';
@@ -14,61 +14,286 @@ class ReadPage extends StatefulWidget {
 }
 
 class _ReadPageState extends State<ReadPage> {
+  bool showController = false;
+
   @override
   void initState() {
     super.initState();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
+  Widget _TopBar() {
+    return Container(
+      color: Colors.black87,
+      height: ScreenTools.getStatusBarHeight() + ScreenTools.getAppBarHeight(),
+      padding: EdgeInsets.only(top: ScreenTools.getStatusBarHeight()),
+      child: Container(
+        child: Row(
           children: [
-            Container(
-              padding:
-                  EdgeInsets.symmetric(horizontal: ScreenTools.getSize(28)),
-              alignment: Alignment.centerLeft,
-              height: ScreenTools.getSize(106),
-              width: double.infinity,
-              child: Text(
-                Provider.of<BookDetailModel>(context, listen: true)
-                            .nowCatalogueIndex ==
-                        null
-                    ? ""
-                    : Provider.of<BookDetailModel>(context, listen: true)
-                        .openBookCatalogue[
-                            Provider.of<BookDetailModel>(context, listen: true)
-                                .nowCatalogueIndex!]
-                        .title,
-                style: TextStyle(
-                    fontSize: ScreenTools.getSize(47),
-                    fontWeight: FontWeight.w200),
-              ),
+            BackButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              color: Colors.white,
             ),
             Expanded(
                 child: Container(
-              padding:
-                  EdgeInsets.symmetric(horizontal: ScreenTools.getSize(45)),
-              child: PageWidget(),
-            )),
-            Container(
-              height: ScreenTools.getSize(99),
-              width: double.infinity,
-              padding:
-                  EdgeInsets.symmetric(horizontal: ScreenTools.getSize(28)),
-              child: Row(
-                children: [
-                  Container(
-                    child: Row(
-                      children: [Container(child: BatteryWidget())],
-                    ),
-                  )
-                ],
+              margin: EdgeInsets.only(left: ScreenTools.getSize(30)),
+              child: Text(
+                Provider.of<BookDetailModel>(context, listen: false)
+                    .openBookInfo
+                    .title,
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
+                style: TextStyle(
+                    fontSize: ScreenTools.getSize(50), color: Colors.white),
               ),
-            )
+            ))
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _bottomBar() {
+    return Container(
+      height: ScreenTools.getScreenBottomBarHeight() + ScreenTools.getSize(420),
+      color: Colors.black87,
+      padding: EdgeInsets.only(bottom: ScreenTools.getScreenBottomBarHeight()),
+      child: Container(
+        child: Column(
+          children: [_catalogureControllerWidget()],
+        ),
+      ),
+    );
+  }
+
+  Widget _catalogureControllerWidget() {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: ScreenTools.getSize(36)),
+      decoration: BoxDecoration(
+          border: Border(
+              bottom: BorderSide(
+                  width: ScreenTools.getSize(1), color: Colors.grey))),
+      height: ScreenTools.getSize(196),
+      child: Row(
+        children: [
+          GestureDetector(
+              onTap: () {
+                if (Provider.of<BookDetailModel>(context, listen: false)
+                        .nowCatalogueIndex !=
+                    0) {
+                  Provider.of<BookDetailModel>(context, listen: false)
+                      .jumpToCatalogue(
+                          Provider.of<BookDetailModel>(context, listen: false)
+                                  .nowCatalogueIndex!);
+                }
+              },
+              behavior: HitTestBehavior.translucent,
+              child: Container(
+                child: Text(
+                  "上一章",
+                  style: TextStyle(
+                      fontSize: ScreenTools.getSize(45),
+                      color: Provider.of<BookDetailModel>(context, listen: true)
+                                  .nowCatalogueIndex ==
+                              0
+                          ? Colors.grey
+                          : Colors.white),
+                ),
+              )),
+          Expanded(
+              child: Container(
+            child: Slider(
+              min: 1,
+              max: Provider.of<BookDetailModel>(context, listen: false)
+                      .openBookCatalogue
+                      .length *
+                  1.0,
+              divisions: Provider.of<BookDetailModel>(context, listen: false)
+                  .openBookCatalogue
+                  .length,
+              value: Provider.of<BookDetailModel>(context, listen: true)
+                  .catalogureSliderValue,
+              label: Provider.of<BookDetailModel>(context, listen: true)
+                  .catalogureSliderValue
+                  .toStringAsFixed(0),
+              onChanged: (v) {
+                Provider.of<BookDetailModel>(context, listen: false)
+                    .updateSliderValue(v);
+              },
+              onChangeEnd: (v) {
+                Provider.of<BookDetailModel>(context, listen: false)
+                    .jumpToCatalogue(v.toInt());
+              },
+            ),
+          )),
+          GestureDetector(
+              onTap: () {
+                if (Provider.of<BookDetailModel>(context, listen: false)
+                        .nowCatalogueIndex !=
+                    Provider.of<BookDetailModel>(context, listen: false)
+                            .openBookCatalogue
+                            .length -
+                        1) {
+                  Provider.of<BookDetailModel>(context, listen: false)
+                      .jumpToCatalogue(
+                          Provider.of<BookDetailModel>(context, listen: false)
+                                  .nowCatalogueIndex! +
+                              2);
+                }
+              },
+              behavior: HitTestBehavior.translucent,
+              child: Container(
+                child: Text(
+                  "下一章",
+                  style: TextStyle(
+                      fontSize: ScreenTools.getSize(45),
+                      color: Provider.of<BookDetailModel>(context, listen: true)
+                                  .nowCatalogueIndex ==
+                              Provider.of<BookDetailModel>(context,
+                                          listen: true)
+                                      .openBookCatalogue
+                                      .length -
+                                  1
+                          ? Colors.grey
+                          : Colors.white),
+                ),
+              ))
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          SafeArea(
+            child: Column(
+              children: [
+                Container(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: ScreenTools.getSize(28)),
+                  alignment: Alignment.centerLeft,
+                  height: ScreenTools.getSize(106),
+                  width: double.infinity,
+                  child: Text(
+                    Provider.of<BookDetailModel>(context, listen: true)
+                                .nowCatalogueIndex ==
+                            null
+                        ? ""
+                        : Provider.of<BookDetailModel>(context, listen: true)
+                            .openBookCatalogue[Provider.of<BookDetailModel>(
+                                    context,
+                                    listen: true)
+                                .nowCatalogueIndex!]
+                            .title,
+                    style: TextStyle(
+                        fontSize: ScreenTools.getSize(47),
+                        fontWeight: FontWeight.w200),
+                  ),
+                ),
+                Expanded(
+                    child: Stack(
+                  children: [
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: ScreenTools.getSize(45)),
+                      child: PageWidget(),
+                    ),
+                    Container(
+                      width: double.infinity,
+                      height: double.infinity,
+                      child: Row(
+                        children: [
+                          Expanded(
+                              child: GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onTap: () {
+                              Provider.of<BookDetailModel>(context,
+                                      listen: false)
+                                  .pageTurning(false);
+                            },
+                            child: Container(),
+                          )),
+                          Expanded(
+                              child: Container(
+                                  // color: Colors.red,
+                                  )),
+                          Expanded(
+                              child: GestureDetector(
+                                  behavior: HitTestBehavior.translucent,
+                                  onTap: () {
+                                    Provider.of<BookDetailModel>(context,
+                                            listen: false)
+                                        .pageTurning(true);
+                                  },
+                                  child: Container()))
+                        ],
+                      ),
+                    )
+                  ],
+                )),
+                Container(
+                  height: ScreenTools.getSize(99),
+                  width: double.infinity,
+                  padding:
+                      EdgeInsets.symmetric(horizontal: ScreenTools.getSize(45)),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            BatteryWidget(),
+                            Container(
+                              margin: EdgeInsets.only(
+                                  left: ScreenTools.getSize(40)),
+                              child: Text(Provider.of<BookDetailModel>(context,
+                                      listen: true)
+                                  .dateTimeShow),
+                            )
+                          ],
+                        ),
+                      ),
+                      Container(
+                        child: Provider.of<BookDetailModel>(context,
+                                        listen: true)
+                                    .totalPage ==
+                                null
+                            ? Container()
+                            : Text(
+                                "${Provider.of<BookDetailModel>(context, listen: true).nowPage}/${Provider.of<BookDetailModel>(context, listen: true).totalPage}页"),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+          Container(
+            height: double.infinity,
+            width: double.infinity,
+            child: Column(
+              children: [
+                _TopBar(),
+                Expanded(
+                    child: GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onTap: () {
+                    setState(() {
+                      showController = false;
+                    });
+                  },
+                )),
+                _bottomBar()
+              ],
+            ),
+          )
+        ],
       ),
     );
   }

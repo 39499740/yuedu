@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -17,7 +18,6 @@ import 'package:yuedu/utils/local_storage.dart';
 import 'package:yuedu/utils/tools.dart';
 
 Future<void> main() async {
-
   runApp(MyApp());
 }
 
@@ -36,11 +36,12 @@ class MyApp extends StatelessWidget {
         })
       ],
       child: MaterialApp(
-        title: 'Flutter Demo',
-        theme: ThemeData(
-
-          primarySwatch: Colors.blue,
-        ),
+          title: 'Flutter Demo',
+          builder: BotToastInit(),
+          navigatorObservers: [BotToastNavigatorObserver()],
+          theme: ThemeData(
+            primarySwatch: Colors.blue,
+          ),
           onGenerateRoute: (settings) {
             if (settings.name == '/') {
               return MaterialPageRoute(
@@ -76,7 +77,4 @@ class MyApp extends StatelessWidget {
           }),
     );
   }
-
-
-
 }

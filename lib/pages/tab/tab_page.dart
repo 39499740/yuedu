@@ -1,4 +1,9 @@
+import 'dart:async';
+
+import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:yuedu/model/bookDetailModel.dart';
 import 'package:yuedu/pages/bookshelf/book_shelf_page.dart';
 import 'package:yuedu/pages/search/search_page.dart';
 
@@ -16,6 +21,19 @@ class _TabPageState extends State<TabPage> {
     SearchPage(),
     BookShelfPage(),
   ];
+  late Timer _updateTotalDataTimer;
+
+
+  @override
+  void initState() {
+
+    super.initState();
+
+    _updateTotalDataTimer = new Timer.periodic(new Duration(seconds: 1), (timer) {
+      Provider.of<BookDetailModel>(context,listen: false).updateTotalData();
+
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,5 +53,10 @@ class _TabPageState extends State<TabPage> {
         ],
       ),
     );
+  }
+  @override
+  void dispose() {
+    _updateTotalDataTimer.cancel();
+    super.dispose();
   }
 }
