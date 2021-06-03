@@ -125,7 +125,7 @@ class BookDetailModel with ChangeNotifier {
   }
 
   void cacheContent() {
-    for (int i = _nowCatalogueIndex! - 5; i < _nowCatalogueIndex! + 5; i++) {
+    for (int i = _nowCatalogueIndex! - 10; i < _nowCatalogueIndex! + 10; i++) {
       if (i > 0 && i < _openBookCatalogue.length) {
         getContent(i);
       }
