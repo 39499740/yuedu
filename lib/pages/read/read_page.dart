@@ -85,7 +85,7 @@ class _ReadPageState extends State<ReadPage> {
                   Provider.of<BookDetailModel>(context, listen: false)
                       .jumpToCatalogue(
                           Provider.of<BookDetailModel>(context, listen: false)
-                                  .nowCatalogueIndex!);
+                              .nowCatalogueIndex!);
                 }
               },
               behavior: HitTestBehavior.translucent,
@@ -218,9 +218,15 @@ class _ReadPageState extends State<ReadPage> {
                             child: Container(),
                           )),
                           Expanded(
-                              child: Container(
-                                  // color: Colors.red,
-                                  )),
+                              child: GestureDetector(
+                            behavior: HitTestBehavior.translucent,
+                            onTap: () {
+                              setState(() {
+                                showController = true;
+                              });
+                            },
+                            child: Container(),
+                          )),
                           Expanded(
                               child: GestureDetector(
                                   behavior: HitTestBehavior.translucent,
@@ -274,23 +280,26 @@ class _ReadPageState extends State<ReadPage> {
               ],
             ),
           ),
-          Container(
-            height: double.infinity,
-            width: double.infinity,
-            child: Column(
-              children: [
-                _TopBar(),
-                Expanded(
-                    child: GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTap: () {
-                    setState(() {
-                      showController = false;
-                    });
-                  },
-                )),
-                _bottomBar()
-              ],
+          Offstage(
+            offstage: !showController,
+            child: Container(
+              height: double.infinity,
+              width: double.infinity,
+              child: Column(
+                children: [
+                  _TopBar(),
+                  Expanded(
+                      child: GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () {
+                      setState(() {
+                        showController = false;
+                      });
+                    },
+                  )),
+                  _bottomBar()
+                ],
+              ),
             ),
           )
         ],
