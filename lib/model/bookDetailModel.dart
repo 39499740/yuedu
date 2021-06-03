@@ -107,10 +107,11 @@ class BookDetailModel with ChangeNotifier {
           }
           _nowStrList = PagingTool.pagingContent(
               _openBookCatalogue[_nowCatalogueIndex!].content,
-              ScreenTools.getSize(30),
+              ScreenTools.getSize(50),
               _textAreaWidth,
               _textAreaHeight);
           _totalPage = _nowStrList.length;
+          print(totalPage);
           _nowPage = totalPage!;
         }
       } else {

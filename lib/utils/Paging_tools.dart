@@ -5,13 +5,11 @@ import 'package:yuedu/utils/tools.dart';
 class PagingTool {
   static List<String> pagingContent(
       String content, double textSize, width, height) {
-    print(textSize);
     List<String> pageList = [];
     int count = 1;
     bool getCount = false;
     while (true) {
       if (count > content.length) {
-
         pageList.add(content);
         break;
       }
@@ -35,27 +33,5 @@ class PagingTool {
       }
     }
     return pageList;
-  }
-
-  static int maxChineseCharCount(
-      double width, double maxHeight, double textSize) {
-    GlobalData global = GlobalData();
-    int count = 1;
-    while (true) {
-      final painter = TextPainter(
-        text: TextSpan(
-          text: "一" * count,
-          style: TextStyle(
-            fontSize: textSize,
-          ),
-        ),
-        textDirection: TextDirection.ltr,
-      );
-      painter.layout(minWidth: width, maxWidth: width);
-      if (painter.size.height > maxHeight) {
-        return count - 1;
-      }
-      count++;
-    }
   }
 }
