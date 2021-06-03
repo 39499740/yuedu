@@ -88,11 +88,9 @@ class _ReadPageState extends State<ReadPage> {
                       .jumpToCatalogue(
                           Provider.of<BookDetailModel>(context, listen: false)
                               .nowCatalogueIndex!);
-                  Provider.of<BookShelfModel>(context)
-                      .updateBookInfo(Provider.of<BookDetailModel>(
-                      context,
-                      listen: false)
-                      .openBookInfo);
+                  Provider.of<BookShelfModel>(context,listen: false).updateBookInfo(
+                      Provider.of<BookDetailModel>(context, listen: false)
+                          .openBookInfo);
                 }
               },
               behavior: HitTestBehavior.translucent,
@@ -112,11 +110,11 @@ class _ReadPageState extends State<ReadPage> {
               child: Container(
             child: Slider(
               min: 1,
-              max: Provider.of<BookDetailModel>(context, listen: false)
+              max: Provider.of<BookDetailModel>(context, listen: true)
                       .openBookCatalogue
                       .length *
                   1.0,
-              divisions: Provider.of<BookDetailModel>(context, listen: false)
+              divisions: Provider.of<BookDetailModel>(context, listen: true)
                   .openBookCatalogue
                   .length,
               value: Provider.of<BookDetailModel>(context, listen: true)
@@ -131,11 +129,9 @@ class _ReadPageState extends State<ReadPage> {
               onChangeEnd: (v) {
                 Provider.of<BookDetailModel>(context, listen: false)
                     .jumpToCatalogue(v.toInt());
-                Provider.of<BookShelfModel>(context)
-                    .updateBookInfo(Provider.of<BookDetailModel>(
-                    context,
-                    listen: false)
-                    .openBookInfo);
+                Provider.of<BookShelfModel>(context,listen: false).updateBookInfo(
+                    Provider.of<BookDetailModel>(context, listen: false)
+                        .openBookInfo);
               },
             ),
           )),
@@ -152,11 +148,10 @@ class _ReadPageState extends State<ReadPage> {
                           Provider.of<BookDetailModel>(context, listen: false)
                                   .nowCatalogueIndex! +
                               2);
-                  Provider.of<BookShelfModel>(context)
-                      .updateBookInfo(Provider.of<BookDetailModel>(
-                      context,
-                      listen: false)
-                      .openBookInfo);
+                  Provider.of<BookShelfModel>(context, listen: false)
+                      .updateBookInfo(
+                          Provider.of<BookDetailModel>(context, listen: false)
+                              .openBookInfo);
                 }
               },
               behavior: HitTestBehavior.translucent,
@@ -232,7 +227,8 @@ class _ReadPageState extends State<ReadPage> {
                               Provider.of<BookDetailModel>(context,
                                       listen: false)
                                   .pageTurning(false);
-                              Provider.of<BookShelfModel>(context)
+                              Provider.of<BookShelfModel>(context,
+                                      listen: false)
                                   .updateBookInfo(Provider.of<BookDetailModel>(
                                           context,
                                           listen: false)
@@ -257,11 +253,13 @@ class _ReadPageState extends State<ReadPage> {
                                     Provider.of<BookDetailModel>(context,
                                             listen: false)
                                         .pageTurning(true);
-                                    Provider.of<BookShelfModel>(context)
-                                        .updateBookInfo(Provider.of<BookDetailModel>(
-                                        context,
-                                        listen: false)
-                                        .openBookInfo);
+                                    Provider.of<BookShelfModel>(context,
+                                            listen: false)
+                                        .updateBookInfo(
+                                            Provider.of<BookDetailModel>(
+                                                    context,
+                                                    listen: false)
+                                                .openBookInfo);
                                   },
                                   child: Container()))
                         ],

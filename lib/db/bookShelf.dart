@@ -43,7 +43,16 @@ create table $tableBookShelf (
   $columnWordCount int,
   $columnLastOpen int 
   )
-''');
+  ''');
+      await db.execute('''
+  create table $tableBookCatalogue (
+$columnId integer primary key autoincrement, 
+  $columnTitle text not null,
+    $columnLink text not null,
+    $columnContent text,
+    $columnBookId int not null
+    )
+    ''');
     });
   }
 
@@ -78,6 +87,26 @@ create table $tableBookShelf (
     return null;
   }
 
+  Future<List<BookCatalogue>> getCatalogueList(int bid) async {
+    List<Map> maps = await db.query(tableBookCatalogue,
+        columns: [
+          columnId,
+          columnTitle,
+          columnLink,
+          columnBookId,
+          columnContent
+        ],
+        where: '$columnBookId = ?',
+        whereArgs: [bid]);
+    List<BookCatalogue> bcList = [];
+    if (maps.length > 0) {
+      for (Map m in maps) {
+        bcList.add(BookCatalogue.fromMap(m));
+      }
+    }
+    return bcList;
+  }
+
   Future<List<BookInfo>> getAllBooks() async {
     List<Map> maps = await db.query(
       tableBookShelf,
@@ -105,15 +134,47 @@ create table $tableBookShelf (
     return bookList;
   }
 
-  Future<int> delete(int id) async {
-    return await db
-        .delete(tableBookShelf, where: '$columnId = ?', whereArgs: [id]);
+  Future<void> delete(int id) async {
+    await db.delete(tableBookShelf, where: '$columnId = ?', whereArgs: [id]);
+    await db.delete(tableBookCatalogue,
+        where: '$columnBookId = ?', whereArgs: [id]);
   }
 
-  Future<int> update(BookInfo info) async {
+  Future<int> updateBook(BookInfo info) async {
     info.lastOpen = DateTime.now().millisecondsSinceEpoch;
     return await db.update(tableBookShelf, info.toMap(),
         where: '$columnId = ?', whereArgs: [info.id]);
+  }
+  Future<int> updateCatalogue(BookCatalogue bc) async {
+    return await db.update(tableBookCatalogue, bc.toMap(),
+        where: '$columnId = ?', whereArgs: [bc.id]);
+  }
+
+  Future<List<BookCatalogue>> insertAllCatalogue(
+      List<BookCatalogue> bcl) async {
+    var batch = db.batch();
+
+    bcl.forEach((bc) {
+      batch.insert(tableBookCatalogue, bc.toMap());
+    });
+    batch.commit();
+    List<Map> maps = await db.query(tableBookCatalogue,
+        columns: [
+          columnId,
+          columnTitle,
+          columnLink,
+          columnBookId,
+          columnContent
+        ],
+        where: '$columnBookId = ?',
+        whereArgs: [bcl[0].bookId]);
+    List<BookCatalogue> bcList = [];
+    if (maps.length > 0) {
+      for (Map m in maps) {
+        bcList.add(BookCatalogue.fromMap(m));
+      }
+    }
+    return bcList;
   }
 
   Future close() async => db.close();
@@ -149,7 +210,7 @@ class BookInfo {
       columnWordCount: bookmarkWordCount,
       columnLastOpen: lastOpen
     };
-    print(id);
+
     if (id != null) {
       map[columnId] = id;
     }

@@ -31,13 +31,20 @@ class LocalStorage {
     return await bookShelfProvider.insert(b);
   }
 
-  Future<BookCatalogue> insertBookCatalogueToLocalStorage(BookInfo b,List<BookCatalogue> bcl){
-    //TODO: 批量加入章节列表
-    return
+  Future<List<BookCatalogue>> insertBookCatalogueToLocalStorage(
+      BookInfo b, List<BookCatalogue> bcl) async {
+    for (BookCatalogue bc in bcl) {
+      bc.bookId = b.id;
+    }
+    return await bookShelfProvider.insertAllCatalogue(bcl);
   }
 
-  Future<void> updateBookInfoinLocalStorage(BookInfo b) async{
-    await bookShelfProvider.update(b);
+  Future<void> updateBookInfoinLocalStorage(BookInfo b) async {
+    await bookShelfProvider.updateBook(b);
+  }
+
+  Future<void> updateBookCatalogueInLocaStorage(BookCatalogue bc) async {
+    await bookShelfProvider.updateCatalogue(bc);
   }
 
   Future<void> deleteBookFromLocalStorage(BookInfo b) async {
@@ -48,12 +55,11 @@ class LocalStorage {
     return await bookShelfProvider.getBookInfo(id);
   }
 
-  Future<List<BookInfo>?>getAllBooksFromLocalStorage() async {
+  Future<List<BookInfo>?> getAllBooksFromLocalStorage() async {
     return await bookShelfProvider.getAllBooks();
   }
 
-
-
+  Future<List<BookCatalogue>> getAllCatalogueFromLocalStorage(int bid) async {
+    return await bookShelfProvider.getCatalogueList(bid);
+  }
 }
-
-

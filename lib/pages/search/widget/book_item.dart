@@ -66,6 +66,7 @@ class BookItemCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+        Provider.of<BookDetailModel>(context,listen: false).cleanOpenData();
         BookInfo tempBook = Provider.of<BookShelfModel>(context, listen: false)
             .getBookInfoWithLink(b.link);
         if (tempBook.id != null) {

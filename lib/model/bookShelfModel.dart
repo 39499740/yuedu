@@ -72,7 +72,6 @@ class BookShelfModel with ChangeNotifier {
     for (BookInfo book in _shelfBooks) {
       if (link == book.link) {
         return book;
-
       }
     }
     return BookInfo();

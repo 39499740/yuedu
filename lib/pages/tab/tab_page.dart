@@ -29,10 +29,9 @@ class _TabPageState extends State<TabPage> {
 
     super.initState();
 
-    _updateTotalDataTimer = new Timer.periodic(new Duration(seconds: 1), (timer) {
-      Provider.of<BookDetailModel>(context,listen: false).updateTotalData();
-
-    });
+    // _updateTotalDataTimer = new Timer.periodic(new Duration(seconds: 1), (timer) {
+    //   Provider.of<BookDetailModel>(context,listen: false).updateTotalData();
+    // });
   }
 
   @override

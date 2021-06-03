@@ -57,11 +57,12 @@ class BookDetailModel with ChangeNotifier {
 
   Set _cacheSet = {};
 
-  void addCatalogureToLocalStorage(){
+  Future<void> addCatalogureToLocalStorage() async {
     LocalStorage ls = LocalStorage();
-    ls.insertBookToLocalstorage(b)
+    _openBookCatalogue = await ls.insertBookCatalogueToLocalStorage(
+        _openBookInfo, _openBookCatalogue);
+    notifyListeners();
   }
-
 
   Future<void> updateTotalData() async {
     _batteryLevel = await Battery().batteryLevel;
@@ -69,9 +70,17 @@ class BookDetailModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void jumpToCatalogue(int index) {
+  Future<void> jumpToCatalogue(int index) async {
     _nowCatalogueIndex = index - 1;
-    refreshBook();
+    if (_openBookInfo.id != null) {
+      _openBookInfo.bookmarkCatalogureId =
+      _openBookCatalogue[_nowCatalogueIndex!].id!;
+      _openBookInfo.bookmarkCatalogureTitle =
+          _openBookCatalogue[_nowCatalogueIndex!].title;
+      _openBookInfo.bookmarkWordCount = 0;
+    }
+    _nowPage = 1;
+    await refreshBook();
   }
 
   void updateSliderValue(double v) {
@@ -90,6 +99,9 @@ class BookDetailModel with ChangeNotifier {
             _openBookCatalogue[_nowCatalogueIndex!].content =
                 await BookReptile.getBookContentWithCatalouge(
                     _openBookCatalogue[_nowCatalogueIndex!]);
+            if(_openBookInfo.id != null){
+              saveContentToLocalStorage(_openBookCatalogue[_nowCatalogueIndex!]);
+            }
           }
           _nowStrList = PagingTool.pagingContent(
               _openBookCatalogue[_nowCatalogueIndex!].content,
@@ -112,6 +124,9 @@ class BookDetailModel with ChangeNotifier {
             _openBookCatalogue[_nowCatalogueIndex!].content =
                 await BookReptile.getBookContentWithCatalouge(
                     _openBookCatalogue[_nowCatalogueIndex!]);
+            if(_openBookInfo.id != null){
+              saveContentToLocalStorage(_openBookCatalogue[_nowCatalogueIndex!]);
+            }
           }
           _nowStrList = PagingTool.pagingContent(
               _openBookCatalogue[_nowCatalogueIndex!].content,
@@ -135,7 +150,7 @@ class BookDetailModel with ChangeNotifier {
           _openBookCatalogue[_nowCatalogueIndex!].title;
       int tempWordCount = 0;
       for (int i = 0; i < _nowStrList.length; i++) {
-        if (i < _nowPage - 1) {
+        if (i < _nowPage) {
           tempWordCount += _nowStrList[i].length;
         }
       }
@@ -160,6 +175,9 @@ class BookDetailModel with ChangeNotifier {
         _cacheSet.add(bc.link);
         bc.content = await BookReptile.getBookContentWithCatalouge(bc);
         _openBookCatalogue[index] = bc;
+        if(_openBookInfo.id != null){
+          saveContentToLocalStorage(bc);
+        }
         _cacheSet.remove(bc.link);
       }
     }
@@ -182,7 +200,6 @@ class BookDetailModel with ChangeNotifier {
   }
 
   Future<void> refreshBook() async {
-    BotToast.showLoading();
 
     if (_nowCatalogueIndex == null) {
       if (_openBookInfo.bookmarkCatalogureId != null) {
@@ -197,9 +214,15 @@ class BookDetailModel with ChangeNotifier {
       }
     }
     if (_openBookCatalogue[_nowCatalogueIndex!].content == "") {
+      BotToast.showLoading();
       _openBookCatalogue[_nowCatalogueIndex!].content =
           await BookReptile.getBookContentWithCatalouge(
               _openBookCatalogue[_nowCatalogueIndex!]);
+      BotToast.closeAllLoading();
+
+      if(_openBookInfo.id != null){
+        saveContentToLocalStorage(_openBookCatalogue[_nowCatalogueIndex!]);
+      }
     }
     _nowStrList = PagingTool.pagingContent(
         _openBookCatalogue[_nowCatalogueIndex!].content,
@@ -211,8 +234,10 @@ class BookDetailModel with ChangeNotifier {
       int tempCount = 0;
       for (int i = 0; i < _nowStrList.length; i++) {
         tempCount += _nowStrList[i].length;
+
         if (_openBookInfo.bookmarkWordCount! < tempCount) {
-          _nowPage = i + 1;
+          _nowPage = i+1;
+          break;
         }
       }
     } else {
@@ -229,12 +254,22 @@ class BookDetailModel with ChangeNotifier {
       _openBookInfo.bookmarkWordCount = 0;
     }
     notifyListeners();
-    BotToast.closeAllLoading();
   }
 
-  void openBook(BookInfo b) {
+  Future<void> openBook(BookInfo b) async {
+    readViewDispose();
     _openBookInfo = b;
+    if (b.id != null) {
+      LocalStorage ls = LocalStorage();
+      _openBookCatalogue = await ls.getAllCatalogueFromLocalStorage(b.id!);
+    }
     notifyListeners();
+  }
+
+  void cleanOpenData(){
+    readViewDispose();
+    _openBookCatalogue = [];
+    _openBookInfo = BookInfo();
   }
 
   void setupCatalogue(List<BookCatalogue> bc) {
@@ -245,5 +280,10 @@ class BookDetailModel with ChangeNotifier {
   void updateContent(int index, String content) {
     _openBookCatalogue[index].content = content;
     notifyListeners();
+  }
+
+  Future<void> saveContentToLocalStorage(BookCatalogue bc) async {
+    LocalStorage ls = LocalStorage();
+    await ls.updateBookCatalogueInLocaStorage(bc);
   }
 }

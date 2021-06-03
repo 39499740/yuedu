@@ -1,12 +1,13 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:html/parser.dart' show parse;
 
 import 'package:http/http.dart' as http;
 import 'package:yuedu/db/bookShelf.dart';
 import 'package:yuedu/utils/tools.dart';
 
-
 class BookReptile {
   static Future<List<BookInfo>> getBookListWithKeyWord(String keyWorld) async {
+    BotToast.showLoading();
     List<BookInfo> searchResultList = [];
     var url = Uri.parse('https://www.biquge7.com/s?q=' + keyWorld);
     print('https://www.biquge7.com/s?q=' + keyWorld);
@@ -17,6 +18,7 @@ class BookReptile {
     temp.forEach((element) {
       searchResultList.add(BookInfo().fromElement(element));
     });
+    BotToast.closeAllLoading();
     return searchResultList;
   }
 
@@ -26,7 +28,8 @@ class BookReptile {
     var url = Uri.parse(b.link);
     var response = await http.get(url);
     var document = parse(response.body);
-    var temp = document.querySelectorAll(".listmain").first.querySelectorAll("dd");
+    var temp =
+        document.querySelectorAll(".listmain").first.querySelectorAll("dd");
     temp.forEach((element) {
       resultList.add(BookCatalogue().fromElement(element, b.id));
     });
@@ -39,9 +42,8 @@ class BookReptile {
     var url = Uri.parse(bc.link);
     var response = await http.get(url);
     var document = parse(response.body);
-    var contentSource = document.querySelector("#content")!.innerHtml.toString();
+    var contentSource =
+        document.querySelector("#content")!.innerHtml.toString();
     return Utils.getStrWithOutHTML(contentSource);
   }
-
 }
-

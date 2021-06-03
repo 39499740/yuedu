@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:bot_toast/bot_toast.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:extended_sliver/extended_sliver.dart';
 import 'package:flutter/material.dart';
@@ -27,12 +28,15 @@ class _BookDetailPageState extends State<BookDetailPage> {
   }
 
   setupCatalogue() async {
-    List<BookCatalogue> catalogueList =
-        await BookReptile.getBookCatalogueWithBookInfo(
-            Provider.of<BookDetailModel>(context, listen: false).openBookInfo);
-    Provider.of<BookDetailModel>(context, listen: false)
-        .setupCatalogue(catalogueList);
-
+    if (Provider.of<BookDetailModel>(context,listen: false).openBookCatalogue.length == 0) {
+      List<BookCatalogue> catalogueList =
+      await BookReptile.getBookCatalogueWithBookInfo(
+          Provider
+              .of<BookDetailModel>(context, listen: false)
+              .openBookInfo);
+      Provider.of<BookDetailModel>(context, listen: false)
+          .setupCatalogue(catalogueList);
+    }
     setState(() {
       isLoading = false;
     });
@@ -229,14 +233,18 @@ class _BookDetailPageState extends State<BookDetailPage> {
                 Provider.of<BookDetailModel>(context, listen: false)
                     .openBook(b);
               } else {
+                BotToast.showLoading();
                 BookInfo b =
                     await Provider.of<BookShelfModel>(context, listen: false)
                         .addBookToShelf(
                             Provider.of<BookDetailModel>(context, listen: false)
                                 .openBookInfo);
+                await Provider.of<BookDetailModel>(context, listen: false)
+                    .addCatalogureToLocalStorage();
 
                 Provider.of<BookDetailModel>(context, listen: false)
                     .openBook(b);
+                BotToast.closeAllLoading();
               }
 
               setState(() {});
