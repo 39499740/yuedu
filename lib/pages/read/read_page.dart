@@ -2,11 +2,14 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
+import 'package:yuedu/db/bookShelf.dart';
 import 'package:yuedu/model/bookDetailModel.dart';
 import 'package:yuedu/model/bookShelfModel.dart';
+import 'package:yuedu/pages/bookdetail/book_detail_catalogue_page.dart';
 import 'package:yuedu/pages/read/battery_widget.dart';
 import 'package:yuedu/utils/tools.dart';
 import 'package:yuedu/widget/pageWidget.dart';
+
 
 class ReadPage extends StatefulWidget {
   ReadPage({Key? key}) : super(key: key);
@@ -17,10 +20,15 @@ class ReadPage extends StatefulWidget {
 
 class _ReadPageState extends State<ReadPage> {
   bool showController = false;
+  ScrollController _catalogueListController = ScrollController();
+
+
+
 
   @override
   void initState() {
     super.initState();
+
   }
 
   Widget _TopBar() {
@@ -63,7 +71,38 @@ class _ReadPageState extends State<ReadPage> {
       padding: EdgeInsets.only(bottom: ScreenTools.getScreenBottomBarHeight()),
       child: Container(
         child: Column(
-          children: [_catalogureControllerWidget()],
+          children: [
+            _catalogureControllerWidget(),
+            Container(
+              margin: EdgeInsets.only(top: ScreenTools.getSize(45)),
+              alignment: Alignment.centerLeft,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  _bottomBtn(
+                      Icon(
+                        Icons.view_list,
+                        size: ScreenTools.getSize(60),
+                        color: Colors.white,
+                      ),
+                      "目录", () {
+                    _scaffoldKey.currentState!.openDrawer();
+
+                    WidgetsBinding.instance!.addPostFrameCallback((_){
+
+                      _catalogueListController.jumpTo(
+                          ScreenTools.getSize(132) *
+                              Provider.of<BookDetailModel>(context, listen: false)
+                                  .nowCatalogueIndex!);
+
+                    });
+
+                  })
+                ],
+              ),
+            )
+          ],
         ),
       ),
     );
@@ -88,9 +127,10 @@ class _ReadPageState extends State<ReadPage> {
                       .jumpToCatalogue(
                           Provider.of<BookDetailModel>(context, listen: false)
                               .nowCatalogueIndex!);
-                  Provider.of<BookShelfModel>(context,listen: false).updateBookInfo(
-                      Provider.of<BookDetailModel>(context, listen: false)
-                          .openBookInfo);
+                  Provider.of<BookShelfModel>(context, listen: false)
+                      .updateBookInfo(
+                          Provider.of<BookDetailModel>(context, listen: false)
+                              .openBookInfo);
                 }
               },
               behavior: HitTestBehavior.translucent,
@@ -129,9 +169,10 @@ class _ReadPageState extends State<ReadPage> {
               onChangeEnd: (v) {
                 Provider.of<BookDetailModel>(context, listen: false)
                     .jumpToCatalogue(v.toInt());
-                Provider.of<BookShelfModel>(context,listen: false).updateBookInfo(
-                    Provider.of<BookDetailModel>(context, listen: false)
-                        .openBookInfo);
+                Provider.of<BookShelfModel>(context, listen: false)
+                    .updateBookInfo(
+                        Provider.of<BookDetailModel>(context, listen: false)
+                            .openBookInfo);
               },
             ),
           )),
@@ -176,9 +217,41 @@ class _ReadPageState extends State<ReadPage> {
     );
   }
 
+  Widget _bottomBtn(Icon btnIcon, String title, Function func) {
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () {
+        func();
+      },
+      child: Container(
+        height: ScreenTools.getSize(160),
+        width: ScreenTools.getSize(160),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Container(
+              child: btnIcon,
+            ),
+            Container(
+              child: Text(
+                title,
+                style: TextStyle(
+                    fontSize: ScreenTools.getSize(40), color: Colors.white),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: _catalogueDrawer(),
+      key: _scaffoldKey,
       body: Stack(
         children: [
           SafeArea(
@@ -329,6 +402,59 @@ class _ReadPageState extends State<ReadPage> {
             ),
           )
         ],
+      ),
+    );
+  }
+
+  Widget _catalogueDrawer() {
+    return Drawer(
+      child: SafeArea(
+        child: ListView.builder(
+          padding: EdgeInsets.only(bottom: ScreenTools.getSize(132)),
+          itemExtent: ScreenTools.getSize(132),
+          controller: _catalogueListController,
+          itemBuilder: (context, index) {
+            BookCatalogue bc =
+                Provider.of<BookDetailModel>(context, listen: true)
+                    .openBookCatalogue[index];
+
+            return ListTile(
+              onTap: () {
+                Provider.of<BookDetailModel>(context, listen: false)
+                    .jumpToCatalogue(index + 1);
+                Provider.of<BookShelfModel>(context, listen: false)
+                    .updateBookInfo(
+                        Provider.of<BookDetailModel>(context, listen: false)
+                            .openBookInfo);
+                Navigator.of(context).pop();
+              },
+              title: AutoSizeText(
+                bc.title,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                    fontSize: ScreenTools.getSize(30),
+                    fontWeight:
+                        Provider.of<BookDetailModel>(context, listen: false)
+                                    .nowCatalogueIndex ==
+                                index
+                            ? FontWeight.bold
+                            : FontWeight.w200),
+              ),
+              trailing: bc.bookId == null
+                  ? null
+                  : Container(
+                      width: ScreenTools.getSize(60),
+                      height: ScreenTools.getSize(60),
+                      child: bc.content != ""
+                          ? Icon(Icons.cloud_done)
+                          : Icon(Icons.cloud_download_outlined)),
+            );
+          },
+          itemCount: Provider.of<BookDetailModel>(context, listen: true)
+              .openBookCatalogue
+              .length,
+        ),
       ),
     );
   }
