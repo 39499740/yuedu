@@ -74,10 +74,18 @@ class BookDetailModel with ChangeNotifier {
     _nowCatalogueIndex = index - 1;
     if (_openBookInfo.id != null) {
       _openBookInfo.bookmarkCatalogureId =
-      _openBookCatalogue[_nowCatalogueIndex!].id!;
+          _openBookCatalogue[_nowCatalogueIndex!].id!;
       _openBookInfo.bookmarkCatalogureTitle =
           _openBookCatalogue[_nowCatalogueIndex!].title;
-      _openBookInfo.bookmarkWordCount = 0;
+      int tempWordCount = 1;
+      for (int i = 0; i < _nowStrList.length; i++) {
+        if (i < _nowPage - 1) {
+          tempWordCount += _nowStrList[i].length;
+        }else{
+          break;
+        }
+      }
+      _openBookInfo.bookmarkWordCount = tempWordCount;
     }
     _nowPage = 1;
     await refreshBook();
@@ -99,8 +107,9 @@ class BookDetailModel with ChangeNotifier {
             _openBookCatalogue[_nowCatalogueIndex!].content =
                 await BookReptile.getBookContentWithCatalouge(
                     _openBookCatalogue[_nowCatalogueIndex!]);
-            if(_openBookInfo.id != null){
-              saveContentToLocalStorage(_openBookCatalogue[_nowCatalogueIndex!]);
+            if (_openBookInfo.id != null) {
+              saveContentToLocalStorage(
+                  _openBookCatalogue[_nowCatalogueIndex!]);
             }
           }
           _nowStrList = PagingTool.pagingContent(
@@ -124,8 +133,9 @@ class BookDetailModel with ChangeNotifier {
             _openBookCatalogue[_nowCatalogueIndex!].content =
                 await BookReptile.getBookContentWithCatalouge(
                     _openBookCatalogue[_nowCatalogueIndex!]);
-            if(_openBookInfo.id != null){
-              saveContentToLocalStorage(_openBookCatalogue[_nowCatalogueIndex!]);
+            if (_openBookInfo.id != null) {
+              saveContentToLocalStorage(
+                  _openBookCatalogue[_nowCatalogueIndex!]);
             }
           }
           _nowStrList = PagingTool.pagingContent(
@@ -148,10 +158,12 @@ class BookDetailModel with ChangeNotifier {
           _openBookCatalogue[_nowCatalogueIndex!].id!;
       _openBookInfo.bookmarkCatalogureTitle =
           _openBookCatalogue[_nowCatalogueIndex!].title;
-      int tempWordCount = 0;
+      int tempWordCount = 1;
       for (int i = 0; i < _nowStrList.length; i++) {
-        if (i < _nowPage) {
+        if (i < _nowPage - 1) {
           tempWordCount += _nowStrList[i].length;
+        }else{
+          break;
         }
       }
       _openBookInfo.bookmarkWordCount = tempWordCount;
@@ -175,7 +187,7 @@ class BookDetailModel with ChangeNotifier {
         _cacheSet.add(bc.link);
         bc.content = await BookReptile.getBookContentWithCatalouge(bc);
         _openBookCatalogue[index] = bc;
-        if(_openBookInfo.id != null){
+        if (_openBookInfo.id != null) {
           saveContentToLocalStorage(bc);
         }
         _cacheSet.remove(bc.link);
@@ -200,7 +212,6 @@ class BookDetailModel with ChangeNotifier {
   }
 
   Future<void> refreshBook() async {
-
     if (_nowCatalogueIndex == null) {
       if (_openBookInfo.bookmarkCatalogureId != null) {
         for (int i = 0; i < _openBookCatalogue.length; i++) {
@@ -220,7 +231,7 @@ class BookDetailModel with ChangeNotifier {
               _openBookCatalogue[_nowCatalogueIndex!]);
       BotToast.closeAllLoading();
 
-      if(_openBookInfo.id != null){
+      if (_openBookInfo.id != null) {
         saveContentToLocalStorage(_openBookCatalogue[_nowCatalogueIndex!]);
       }
     }
@@ -235,8 +246,8 @@ class BookDetailModel with ChangeNotifier {
       for (int i = 0; i < _nowStrList.length; i++) {
         tempCount += _nowStrList[i].length;
 
-        if (_openBookInfo.bookmarkWordCount! < tempCount) {
-          _nowPage = i+1;
+        if (_openBookInfo.bookmarkWordCount! <= tempCount) {
+          _nowPage = i + 1;
           break;
         }
       }
@@ -251,7 +262,15 @@ class BookDetailModel with ChangeNotifier {
           _openBookCatalogue[_nowCatalogueIndex!].id!;
       _openBookInfo.bookmarkCatalogureTitle =
           _openBookCatalogue[_nowCatalogueIndex!].title;
-      _openBookInfo.bookmarkWordCount = 0;
+      int tempWordCount = 1;
+      for (int i = 0; i < _nowStrList.length; i++) {
+        if (i < _nowPage - 1) {
+          tempWordCount += _nowStrList[i].length;
+        }else{
+          break;
+        }
+      }
+      _openBookInfo.bookmarkWordCount = tempWordCount;
     }
     notifyListeners();
   }
@@ -266,7 +285,7 @@ class BookDetailModel with ChangeNotifier {
     notifyListeners();
   }
 
-  void cleanOpenData(){
+  void cleanOpenData() {
     readViewDispose();
     _openBookCatalogue = [];
     _openBookInfo = BookInfo();

@@ -100,6 +100,7 @@ class _ReadPageState extends State<ReadPage> {
   }
 
   Widget _catalogureControllerWidget() {
+
     return Container(
       margin: EdgeInsets.symmetric(horizontal: ScreenTools.getSize(36)),
       decoration: BoxDecoration(

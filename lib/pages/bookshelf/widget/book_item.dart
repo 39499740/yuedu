@@ -80,9 +80,9 @@ class BookItemCell extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: (){
+      onTap: () async {
         Provider.of<BookDetailModel>(context,listen: false).cleanOpenData();
-        Provider.of<BookDetailModel>(context,listen: false).openBook(b);
+        await Provider.of<BookDetailModel>(context,listen: false).openBook(b);
         Navigator.pushNamed(context, "/read");
       },
       child: Container(

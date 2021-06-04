@@ -26,11 +26,16 @@ class _PageWidgetState extends State<PageWidget> {
   setup() {
     isFirstOpen = false;
 
-    Timer(Duration(milliseconds: 500), () {
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
       Provider.of<BookDetailModel>(context, listen: false)
           .setupWH(context.size!.width, context.size!.height);
       Provider.of<BookDetailModel>(context, listen: false).refreshBook();
     });
+    // Timer(Duration(milliseconds: 500), () {
+    //   Provider.of<BookDetailModel>(context, listen: false)
+    //       .setupWH(context.size!.width, context.size!.height);
+    //   Provider.of<BookDetailModel>(context, listen: false).refreshBook();
+    // });
   }
 
   @override
