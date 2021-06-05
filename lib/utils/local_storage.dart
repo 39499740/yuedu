@@ -1,6 +1,5 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:yuedu/db/bookShelf.dart';
-import 'package:yuedu/utils/book_reptile.dart';
 
 class LocalStorage {
   factory LocalStorage() => _getInstance();
@@ -9,7 +8,7 @@ class LocalStorage {
 
   static LocalStorage? _instance;
 
-  LocalStorage._internal() {}
+  LocalStorage._internal();
 
   static LocalStorage _getInstance() {
     if (_instance == null) {

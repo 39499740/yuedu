@@ -26,7 +26,7 @@ class _ReadPageState extends State<ReadPage> {
     super.initState();
   }
 
-  Widget _TopBar() {
+  Widget _topBar() {
     return Container(
       color: Colors.black87,
       height: ScreenTools.getStatusBarHeight() + ScreenTools.getAppBarHeight(),
@@ -383,7 +383,7 @@ class _ReadPageState extends State<ReadPage> {
               width: double.infinity,
               child: Column(
                 children: [
-                  _TopBar(),
+                  _topBar(),
                   Expanded(
                       child: GestureDetector(
                     behavior: HitTestBehavior.translucent,

@@ -7,7 +7,7 @@ import 'package:yuedu/model/bookDetailModel.dart';
 import 'package:yuedu/utils/tools.dart';
 
 class BookItemCell extends StatelessWidget {
-  BookInfo b;
+  final BookInfo b;
 
   BookItemCell({Key? key, required this.b}) : super(key: key);
 

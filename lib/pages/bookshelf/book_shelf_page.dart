@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:yuedu/model/bookShelfModel.dart';
 import 'package:yuedu/pages/bookshelf/widget/book_item.dart';
-import 'package:yuedu/utils/tools.dart';
 
 class BookShelfPage extends StatefulWidget {
   @override

@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:bot_toast/bot_toast.dart';
 import 'package:dio/dio.dart';
 import 'package:flustars/flustars.dart';
 
@@ -83,20 +82,30 @@ class Network {
       // baseUrl: "http://192.168.0.43:33315/",
       // baseUrl: "http://127.0.0.1:33315/",
       // baseUrl: "http://192.144.135.34:33315/",
+    baseUrl:"http://192.144.135.34:4699/",
       connectTimeout: 5000,
       receiveTimeout: 3000,
       contentType: Headers.formUrlEncodedContentType));
 
   static post(String path, Map<String, dynamic> body) async {
-    BotToast.showLoading();
     try {
       Response res = await dio.post(path, data: body);
-      BotToast.closeAllLoading();
+
       return res;
     } on DioError catch (e) {
       print(e);
-      BotToast.closeAllLoading();
-      BotToast.showText(text: e.toString());
+      return null;
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx and is also not 304.
+    }
+  }
+  static get(String path) async {
+    try {
+      Response res = await dio.get(path);
+
+      return res;
+    } on DioError catch (e) {
+      print(e);
       return null;
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx and is also not 304.

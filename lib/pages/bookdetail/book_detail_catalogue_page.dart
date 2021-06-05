@@ -13,38 +13,7 @@ class BookDetailCataloguePage extends StatefulWidget {
 }
 
 class _BookDetailCataloguePageState extends State<BookDetailCataloguePage> {
-  Widget _listItemCell(int index) {
-    return Container(
-      height: ScreenTools.getSize(132),
-      margin: EdgeInsets.symmetric(horizontal: ScreenTools.getSize(40)),
-      width: double.infinity,
-      child: Row(
-        children: [
-          Expanded(
-              child: Text(
-            Provider.of<BookDetailModel>(context, listen: true)
-                .openBookCatalogue[index]
-                .title,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-          )),
-          Container(
-              margin: EdgeInsets.only(left: ScreenTools.getSize(30)),
-              child: Provider.of<BookDetailModel>(context, listen: true)
-                          .openBookCatalogue[index]
-                          .bookId ==
-                      null
-                  ? Container()
-                  : (Provider.of<BookDetailModel>(context, listen: true)
-                              .openBookCatalogue[index]
-                              .content !=
-                          ""
-                      ? Icon(Icons.cloud_done)
-                      : Icon(Icons.cloud_download_outlined)))
-        ],
-      ),
-    );
-  }
+  
 
   @override
   Widget build(BuildContext context) {

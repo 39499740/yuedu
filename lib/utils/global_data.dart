@@ -5,7 +5,7 @@ class GlobalData {
 
   static GlobalData? _instance;
 
-  GlobalData._internal() {}
+  GlobalData._internal();
 
   static GlobalData _getInstance() {
     if (_instance == null) {

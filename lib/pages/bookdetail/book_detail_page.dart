@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:extended_image/extended_image.dart';
-import 'package:extended_sliver/extended_sliver.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:yuedu/db/bookShelf.dart';

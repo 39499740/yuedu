@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:yuedu/utils/global_data.dart';
-import 'package:yuedu/utils/tools.dart';
+
 
 class PagingTool {
   static List<String> pagingContent(

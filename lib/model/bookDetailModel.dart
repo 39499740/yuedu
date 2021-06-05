@@ -3,7 +3,6 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flustars/flustars.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:yuedu/db/bookShelf.dart';
-import 'package:yuedu/pages/bookdetail/book_detail_page.dart';
 import 'package:yuedu/utils/Paging_tools.dart';
 import 'package:yuedu/utils/book_reptile.dart';
 import 'package:yuedu/utils/local_storage.dart';

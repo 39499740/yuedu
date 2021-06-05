@@ -36,13 +36,15 @@ dependencies:
   html: ^0.15.0
   sqflite: ^2.0.0+3
   uuid: ^3.0.4
-  flutter_downloader: ^1.6.1
-  sn_progress_dialog: ^1.0.2
   battery: ^2.0.3
   extended_image: ^4.1.0
-  extended_sliver: ^2.0.0
   auto_size_text: 3.0.0-nullsafety.0
-  ota_update: ^3.0.2
+  sn_progress_dialog: ^1.0.2
+  path_provider: ^2.0.2
+  package_info_plus: ^1.0.1
+  rflutter_alert: ^2.0.2
+  open_file: ^3.2.1
+
 
 
 dev_dependencies:

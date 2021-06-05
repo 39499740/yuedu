@@ -1,21 +1,15 @@
-import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flustars/flustars.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:yuedu/db/bookShelf.dart';
 import 'package:yuedu/model/bookDetailModel.dart';
 import 'package:yuedu/model/bookShelfModel.dart';
 import 'package:yuedu/pages/bookdetail/book_detail_catalogue_page.dart';
 import 'package:yuedu/pages/bookdetail/book_detail_page.dart';
-import 'package:yuedu/pages/bookshelf/book_shelf_page.dart';
 import 'package:yuedu/pages/read/read_page.dart';
 import 'package:yuedu/pages/tab/tab_page.dart';
-import 'package:yuedu/utils/global_data.dart';
-import 'package:yuedu/utils/local_storage.dart';
-import 'package:yuedu/utils/tools.dart';
+
 
 Future<void> main() async {
   runApp(MyApp());
