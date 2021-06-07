@@ -30,7 +30,7 @@ class _ReadPageState extends State<ReadPage> {
   bool showController = false;
   ScrollController _catalogueListController = ScrollController();
   bool ttsOpen = false;
-  double ttsShowValue = 5.0;
+  double ttsShowValue = 0.5;
 
   /*
   ==========================TTS==========================
@@ -108,7 +108,11 @@ class _ReadPageState extends State<ReadPage> {
     });
 
     flutterTts.setLanguage("zh-CN");
-
+    flutterTts.setIosAudioCategory(IosTextToSpeechAudioCategory.playAndRecord,
+        [IosTextToSpeechAudioCategoryOptions.allowBluetooth,
+          IosTextToSpeechAudioCategoryOptions.allowBluetoothA2DP,
+          IosTextToSpeechAudioCategoryOptions.mixWithOthers
+        ]);
   }
   Future<dynamic> _getEngines() => flutterTts.getEngines;
 
@@ -147,7 +151,7 @@ class _ReadPageState extends State<ReadPage> {
   void initState() {
     super.initState();
     initTts();
-    ttsShowValue = rate * 10;
+    ttsShowValue = rate;
   }
 
 
@@ -450,8 +454,7 @@ class _ReadPageState extends State<ReadPage> {
     return Offstage(
       offstage: !(ttsOpen && showController),
       child: Container(
-        padding:
-            EdgeInsets.only(bottom: ScreenTools.getScreenBottomBarHeight()),
+
         child: Column(
           children: [
             Expanded(
@@ -466,6 +469,8 @@ class _ReadPageState extends State<ReadPage> {
             )),
             Container(
               color: Colors.black87,
+              padding:
+              EdgeInsets.only(bottom: ScreenTools.getScreenBottomBarHeight()),
               child: Column(
                 children: [
                   Container(
@@ -494,9 +499,9 @@ class _ReadPageState extends State<ReadPage> {
                         ),
                         Expanded(
                             child: Slider(
-                          min: 1,
-                          max: 15,
-                          divisions: 15,
+                          min: 0.1,
+                          max: isAndroid?1.5:0.75,
+                          divisions: 5,
                           value: ttsShowValue,
                           onChanged: (double value) {
                             setState(() {
@@ -504,7 +509,8 @@ class _ReadPageState extends State<ReadPage> {
                             });
                           },
                           onChangeEnd: (value) {
-                            rate = value/10;
+                            rate = value;
+                            print(rate);
                             _stop();
                             _speak();
                           },
