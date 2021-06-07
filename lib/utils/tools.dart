@@ -73,6 +73,11 @@ class Utils {
     newStr = newStr.replaceAll("\n\n", "\n");
     newStr = newStr.replaceAll("\n\n", "\n");
     newStr = newStr.replaceAll("\n\n", "\n");
+    bool hasNew = true;
+    while(hasNew){
+      newStr = newStr.replaceAll("---", "");
+      hasNew = newStr.contains("---");
+    }
     return newStr;
   }
 }

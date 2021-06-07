@@ -1,13 +1,20 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_tts/flutter_tts.dart';
 import 'package:provider/provider.dart';
 import 'package:yuedu/db/bookShelf.dart';
+import 'package:yuedu/event/tts_event.dart';
 import 'package:yuedu/gen/assets.gen.dart';
 import 'package:yuedu/model/bookDetailModel.dart';
 import 'package:yuedu/model/bookShelfModel.dart';
 import 'package:yuedu/pages/read/battery_widget.dart';
 import 'package:yuedu/utils/tools.dart';
+import 'package:yuedu/utils/tts_tool.dart';
 import 'package:yuedu/widget/pageWidget.dart';
 
 class ReadPage extends StatefulWidget {
@@ -17,14 +24,132 @@ class ReadPage extends StatefulWidget {
   _ReadPageState createState() => _ReadPageState();
 }
 
+enum TtsState { playing, stopped, paused, continued }
+
 class _ReadPageState extends State<ReadPage> {
   bool showController = false;
   ScrollController _catalogueListController = ScrollController();
+  bool ttsOpen = false;
+  double ttsShowValue = 5.0;
+
+  /*
+  ==========================TTS==========================
+   */
+  late FlutterTts flutterTts;
+  double volume = 0.5;
+  double pitch = 1.0;
+  double rate = 0.5;
+  TtsState ttsState = TtsState.stopped;
+  get isPlaying => ttsState == TtsState.playing;
+  get isStopped => ttsState == TtsState.stopped;
+  get isPaused => ttsState == TtsState.paused;
+  get isContinued => ttsState == TtsState.continued;
+  String? _newVoiceText;
+
+  bool get isIOS => !kIsWeb && Platform.isIOS;
+  bool get isAndroid => !kIsWeb && Platform.isAndroid;
+  bool get isWeb => kIsWeb;
+
+  initTts() async {
+    flutterTts = FlutterTts();
+
+    if (isAndroid) {
+      await _getDefaultEngine();
+    }
+
+    flutterTts.setStartHandler(() {
+      setState(() {
+        print("Playing");
+        ttsState = TtsState.playing;
+      });
+    });
+
+    flutterTts.setCompletionHandler(() {
+      setState(() {
+        print("Complete");
+        ttsState = TtsState.stopped;
+        Provider.of<BookDetailModel>(context, listen: false).pageTurning(true);
+        Provider.of<BookShelfModel>(context, listen: false).updateBookInfo(
+            Provider.of<BookDetailModel>(context, listen: false).openBookInfo);
+        _newVoiceText =
+            Provider.of<BookDetailModel>(context, listen: false).showStr;
+        _speak();
+      });
+    });
+
+    flutterTts.setCancelHandler(() {
+      setState(() {
+        print("Cancel");
+        ttsState = TtsState.stopped;
+      });
+    });
+
+    if (isWeb || isIOS) {
+      flutterTts.setPauseHandler(() {
+        setState(() {
+          print("Paused");
+          ttsState = TtsState.paused;
+        });
+      });
+
+      flutterTts.setContinueHandler(() {
+        setState(() {
+          print("Continued");
+          ttsState = TtsState.continued;
+        });
+      });
+    }
+
+    flutterTts.setErrorHandler((msg) {
+      setState(() {
+        print("error: $msg");
+        ttsState = TtsState.stopped;
+      });
+    });
+
+    flutterTts.setLanguage("zh-CN");
+
+  }
+  Future<dynamic> _getEngines() => flutterTts.getEngines;
+
+
+  Future _getDefaultEngine() async {
+    await flutterTts.setEngine("com.google.android.tts");
+  }
+
+  Future _speak() async {
+    await flutterTts.setVolume(volume);
+    await flutterTts.setSpeechRate(rate);
+    await flutterTts.setPitch(pitch);
+
+    if (_newVoiceText != null) {
+      if (_newVoiceText!.isNotEmpty) {
+        await flutterTts.awaitSpeakCompletion(true);
+        await flutterTts.speak(_newVoiceText!);
+      }
+    }
+  }
+
+  Future _stop() async {
+    var result = await flutterTts.stop();
+    if (result == 1) setState(() => ttsState = TtsState.stopped);
+  }
+
+  Future _pause() async {
+    var result = await flutterTts.pause();
+    if (result == 1) setState(() => ttsState = TtsState.paused);
+  }
+  /*
+  ==========================TTS END==========================
+ */
 
   @override
   void initState() {
     super.initState();
+    initTts();
+    ttsShowValue = rate * 10;
   }
+
 
   Widget _topBar() {
     return Container(
@@ -89,6 +214,20 @@ class _ReadPageState extends State<ReadPage> {
                           Provider.of<BookDetailModel>(context, listen: false)
                               .nowCatalogueIndex!);
                     });
+                  }),
+                  _bottomBtn(
+                      Icon(
+                        Icons.headset,
+                        size: ScreenTools.getSize(60),
+                        color: Colors.white,
+                      ),
+                      "听书", () {
+                    setState(() {
+                      ttsOpen = true;
+                    });
+                    _newVoiceText = Provider.of<BookDetailModel>(context,listen: false).showStr;
+                    _speak();
+
                   })
                 ],
               ),
@@ -100,7 +239,6 @@ class _ReadPageState extends State<ReadPage> {
   }
 
   Widget _catalogureControllerWidget() {
-
     return Container(
       margin: EdgeInsets.symmetric(horizontal: ScreenTools.getSize(36)),
       decoration: BoxDecoration(
@@ -237,6 +375,179 @@ class _ReadPageState extends State<ReadPage> {
     );
   }
 
+  Widget _pageControl() {
+    return Container(
+      width: double.infinity,
+      height: double.infinity,
+      child: Row(
+        children: [
+          Expanded(
+              child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () {
+              Provider.of<BookDetailModel>(context, listen: false)
+                  .pageTurning(false);
+              Provider.of<BookShelfModel>(context, listen: false)
+                  .updateBookInfo(
+                      Provider.of<BookDetailModel>(context, listen: false)
+                          .openBookInfo);
+            },
+            child: Container(),
+          )),
+          Expanded(
+              child: GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () {
+              setState(() {
+                showController = true;
+              });
+            },
+            child: Container(),
+          )),
+          Expanded(
+              child: GestureDetector(
+                  behavior: HitTestBehavior.translucent,
+                  onTap: () {
+                    Provider.of<BookDetailModel>(context, listen: false)
+                        .pageTurning(true);
+                    Provider.of<BookShelfModel>(context, listen: false)
+                        .updateBookInfo(
+                            Provider.of<BookDetailModel>(context, listen: false)
+                                .openBookInfo);
+                  },
+                  child: Container()))
+        ],
+      ),
+    );
+  }
+
+  Widget _readControl() {
+    return Offstage(
+      offstage: !(showController && !ttsOpen),
+      child: Container(
+        height: double.infinity,
+        width: double.infinity,
+        child: Column(
+          children: [
+            _topBar(),
+            Expanded(
+                child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () {
+                setState(() {
+                  showController = false;
+                });
+              },
+            )),
+            _bottomBar()
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _ttsControl() {
+    return Offstage(
+      offstage: !(ttsOpen && showController),
+      child: Container(
+        padding:
+            EdgeInsets.only(bottom: ScreenTools.getScreenBottomBarHeight()),
+        child: Column(
+          children: [
+            Expanded(
+                child: GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: () {
+                setState(() {
+                  showController = false;
+                });
+              },
+              child: Container(),
+            )),
+            Container(
+              color: Colors.black87,
+              child: Column(
+                children: [
+                  Container(
+                    height: ScreenTools.getSize(139),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: ScreenTools.getSize(51)),
+                    child: Row(
+                      children: [
+                        Container(
+                          child: Text(
+                            "语速",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: ScreenTools.getSize(45)),
+                          ),
+                        ),
+                        Container(
+                          child: Text(
+                            "慢",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: ScreenTools.getSize(45)),
+                          ),
+                          margin: EdgeInsets.symmetric(
+                              horizontal: ScreenTools.getSize(60)),
+                        ),
+                        Expanded(
+                            child: Slider(
+                          min: 1,
+                          max: 15,
+                          divisions: 15,
+                          value: ttsShowValue,
+                          onChanged: (double value) {
+                            setState(() {
+                              ttsShowValue = value;
+                            });
+                          },
+                          onChangeEnd: (value) {
+                            rate = value/10;
+                            _stop();
+                            _speak();
+                          },
+                        )),
+                        Container(
+                          child: Text(
+                            "快",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: ScreenTools.getSize(45)),
+                          ),
+                          margin: EdgeInsets.symmetric(
+                              horizontal: ScreenTools.getSize(60)),
+                        )
+                      ],
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: (){
+                      _stop();
+                      setState(() {
+                        ttsOpen = false;
+                      });
+                    },
+                    behavior: HitTestBehavior.translucent,
+                    child: Container(
+                      height: ScreenTools.getSize(139),
+                      alignment: Alignment.center,
+                      child: Text(
+                        "退出听书",
+                        style: TextStyle(fontSize:ScreenTools.getSize(50),color: Colors.white ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -285,56 +596,6 @@ class _ReadPageState extends State<ReadPage> {
                           horizontal: ScreenTools.getSize(45)),
                       child: PageWidget(),
                     ),
-                    Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      child: Row(
-                        children: [
-                          Expanded(
-                              child: GestureDetector(
-                            behavior: HitTestBehavior.translucent,
-                            onTap: () {
-                              Provider.of<BookDetailModel>(context,
-                                      listen: false)
-                                  .pageTurning(false);
-                              Provider.of<BookShelfModel>(context,
-                                      listen: false)
-                                  .updateBookInfo(Provider.of<BookDetailModel>(
-                                          context,
-                                          listen: false)
-                                      .openBookInfo);
-                            },
-                            child: Container(),
-                          )),
-                          Expanded(
-                              child: GestureDetector(
-                            behavior: HitTestBehavior.translucent,
-                            onTap: () {
-                              setState(() {
-                                showController = true;
-                              });
-                            },
-                            child: Container(),
-                          )),
-                          Expanded(
-                              child: GestureDetector(
-                                  behavior: HitTestBehavior.translucent,
-                                  onTap: () {
-                                    Provider.of<BookDetailModel>(context,
-                                            listen: false)
-                                        .pageTurning(true);
-                                    Provider.of<BookShelfModel>(context,
-                                            listen: false)
-                                        .updateBookInfo(
-                                            Provider.of<BookDetailModel>(
-                                                    context,
-                                                    listen: false)
-                                                .openBookInfo);
-                                  },
-                                  child: Container()))
-                        ],
-                      ),
-                    )
                   ],
                 )),
                 Container(
@@ -376,28 +637,9 @@ class _ReadPageState extends State<ReadPage> {
               ],
             ),
           ),
-          Offstage(
-            offstage: !showController,
-            child: Container(
-              height: double.infinity,
-              width: double.infinity,
-              child: Column(
-                children: [
-                  _topBar(),
-                  Expanded(
-                      child: GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: () {
-                      setState(() {
-                        showController = false;
-                      });
-                    },
-                  )),
-                  _bottomBar()
-                ],
-              ),
-            ),
-          )
+          _pageControl(),
+          _readControl(),
+          _ttsControl()
         ],
       ),
     );
@@ -463,5 +705,7 @@ class _ReadPageState extends State<ReadPage> {
   @override
   void dispose() {
     super.dispose();
+    flutterTts.stop();
+
   }
 }
