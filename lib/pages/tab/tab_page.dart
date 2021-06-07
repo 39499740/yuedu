@@ -49,7 +49,6 @@ class _TabPageState extends State<TabPage> {
     PackageInfo.fromPlatform().then((PackageInfo packageInfo) async {
       String buildNumber = packageInfo.buildNumber;
       Response res = await Network.get("newVersion");
-      print(int.parse(res.data["data"]["sys_version"]));
       if (Platform.isAndroid) {
         if (int.parse(res.data["data"]["sys_version"]) >
             int.parse(buildNumber)) {
