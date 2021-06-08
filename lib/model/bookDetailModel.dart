@@ -76,15 +76,7 @@ class BookDetailModel with ChangeNotifier {
           _openBookCatalogue[_nowCatalogueIndex!].id!;
       _openBookInfo.bookmarkCatalogureTitle =
           _openBookCatalogue[_nowCatalogueIndex!].title;
-      int tempWordCount = 1;
-      for (int i = 0; i < _nowStrList.length; i++) {
-        if (i < _nowPage - 1) {
-          tempWordCount += _nowStrList[i].length;
-        }else{
-          break;
-        }
-      }
-      _openBookInfo.bookmarkWordCount = tempWordCount;
+      _openBookInfo.bookmarkWordCount = 1;
     }
     _nowPage = 1;
     await refreshBook();
