@@ -56,6 +56,7 @@ class _ReadPageState extends State<ReadPage> {
     if (isAndroid) {
       await _getDefaultEngine();
     }
+    await flutterTts.setSharedInstance(true);
 
     flutterTts.setStartHandler(() {
       setState(() {
@@ -108,11 +109,16 @@ class _ReadPageState extends State<ReadPage> {
     });
 
     flutterTts.setLanguage("zh-CN");
-    flutterTts.setIosAudioCategory(IosTextToSpeechAudioCategory.playAndRecord,
-        [IosTextToSpeechAudioCategoryOptions.allowBluetooth,
-          IosTextToSpeechAudioCategoryOptions.allowBluetoothA2DP,
-          IosTextToSpeechAudioCategoryOptions.mixWithOthers
-        ]);
+    if (Platform.isIOS) {
+
+      await flutterTts
+          .setIosAudioCategory(IosTextToSpeechAudioCategory.playback, [
+        IosTextToSpeechAudioCategoryOptions.allowBluetooth,
+        IosTextToSpeechAudioCategoryOptions.allowBluetoothA2DP,
+        IosTextToSpeechAudioCategoryOptions.mixWithOthers,
+        IosTextToSpeechAudioCategoryOptions.defaultToSpeaker
+      ]);
+    }
   }
   Future<dynamic> _getEngines() => flutterTts.getEngines;
 
