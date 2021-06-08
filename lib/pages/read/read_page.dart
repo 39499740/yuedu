@@ -425,7 +425,7 @@ class _ReadPageState extends State<ReadPage> {
               child: GestureDetector(
                   behavior: HitTestBehavior.translucent,
                   onTap: () {
-                    if (ttsOpen) {
+                    if (!ttsOpen) {
                       Provider.of<BookDetailModel>(context, listen: false)
                           .pageTurning(true);
                       Provider.of<BookShelfModel>(context, listen: false)
