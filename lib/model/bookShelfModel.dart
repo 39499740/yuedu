@@ -9,8 +9,9 @@ class BookShelfModel with ChangeNotifier {
 
   LocalStorage ls = LocalStorage();
 
-  void updateShelf() {
-    // _shelfBooks = ls.getShelf();
+  Future<void> updateShelf() async {
+    LocalStorage ls = LocalStorage();
+    _shelfBooks = (await ls.getAllBooksFromLocalStorage())!;
     notifyListeners();
   }
 
