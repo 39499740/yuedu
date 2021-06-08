@@ -13,11 +13,11 @@ class TTSTool {
   static TTSTool? _instance;
 
   String? engine;
-  String? _newVoiceText;
+  // String? _newVoiceText;
   double _rate = 0.5; //速度
   double get rate => _rate;
-  double _volume = 1.0;
-  double _pitch = 1.0;
+  // double _volume = 1.0;
+  // double _pitch = 1.0;
   late FlutterTts flutterTts;
 
   TtsState ttsState = TtsState.stopped;
@@ -97,9 +97,9 @@ class TTSTool {
     await flutterTts.speak(voiceText);
   }
 
-  Future _stop() async {
-    var result = await flutterTts.stop();
-  }
+  // Future _stop() async {
+  //   var result = await flutterTts.stop();
+  // }
 
   Future _getDefaultEngine() async {
     var engine = await flutterTts.getDefaultEngine;

@@ -8,13 +8,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:provider/provider.dart';
 import 'package:yuedu/db/bookShelf.dart';
-import 'package:yuedu/event/tts_event.dart';
+
 import 'package:yuedu/gen/assets.gen.dart';
 import 'package:yuedu/model/bookDetailModel.dart';
 import 'package:yuedu/model/bookShelfModel.dart';
 import 'package:yuedu/pages/read/battery_widget.dart';
 import 'package:yuedu/utils/tools.dart';
-import 'package:yuedu/utils/tts_tool.dart';
+
 import 'package:yuedu/widget/pageWidget.dart';
 
 class ReadPage extends StatefulWidget {
@@ -40,14 +40,20 @@ class _ReadPageState extends State<ReadPage> {
   double pitch = 1.0;
   double rate = 0.5;
   TtsState ttsState = TtsState.stopped;
+
   get isPlaying => ttsState == TtsState.playing;
+
   get isStopped => ttsState == TtsState.stopped;
+
   get isPaused => ttsState == TtsState.paused;
+
   get isContinued => ttsState == TtsState.continued;
   String? _newVoiceText;
 
   bool get isIOS => !kIsWeb && Platform.isIOS;
+
   bool get isAndroid => !kIsWeb && Platform.isAndroid;
+
   bool get isWeb => kIsWeb;
 
   initTts() async {
@@ -110,7 +116,6 @@ class _ReadPageState extends State<ReadPage> {
 
     flutterTts.setLanguage("zh-CN");
     if (Platform.isIOS) {
-
       await flutterTts
           .setIosAudioCategory(IosTextToSpeechAudioCategory.playback, [
         IosTextToSpeechAudioCategoryOptions.allowBluetooth,
@@ -120,8 +125,8 @@ class _ReadPageState extends State<ReadPage> {
       ]);
     }
   }
-  Future<dynamic> _getEngines() => flutterTts.getEngines;
 
+  // Future<dynamic> _getEngines() => flutterTts.getEngines;
 
   Future _getDefaultEngine() async {
     await flutterTts.setEngine("com.google.android.tts");
@@ -145,10 +150,10 @@ class _ReadPageState extends State<ReadPage> {
     if (result == 1) setState(() => ttsState = TtsState.stopped);
   }
 
-  Future _pause() async {
-    var result = await flutterTts.pause();
-    if (result == 1) setState(() => ttsState = TtsState.paused);
-  }
+  // Future _pause() async {
+  //   var result = await flutterTts.pause();
+  //   if (result == 1) setState(() => ttsState = TtsState.paused);
+  // }
   /*
   ==========================TTS END==========================
  */
@@ -159,7 +164,6 @@ class _ReadPageState extends State<ReadPage> {
     initTts();
     ttsShowValue = rate;
   }
-
 
   Widget _topBar() {
     return Container(
@@ -235,9 +239,10 @@ class _ReadPageState extends State<ReadPage> {
                     setState(() {
                       ttsOpen = true;
                     });
-                    _newVoiceText = Provider.of<BookDetailModel>(context,listen: false).showStr;
+                    _newVoiceText =
+                        Provider.of<BookDetailModel>(context, listen: false)
+                            .showStr;
                     _speak();
-
                   })
                 ],
               ),
@@ -395,12 +400,14 @@ class _ReadPageState extends State<ReadPage> {
               child: GestureDetector(
             behavior: HitTestBehavior.translucent,
             onTap: () {
-              Provider.of<BookDetailModel>(context, listen: false)
-                  .pageTurning(false);
-              Provider.of<BookShelfModel>(context, listen: false)
-                  .updateBookInfo(
-                      Provider.of<BookDetailModel>(context, listen: false)
-                          .openBookInfo);
+              if (!ttsOpen) {
+                Provider.of<BookDetailModel>(context, listen: false)
+                    .pageTurning(false);
+                Provider.of<BookShelfModel>(context, listen: false)
+                    .updateBookInfo(
+                        Provider.of<BookDetailModel>(context, listen: false)
+                            .openBookInfo);
+              }
             },
             child: Container(),
           )),
@@ -418,12 +425,14 @@ class _ReadPageState extends State<ReadPage> {
               child: GestureDetector(
                   behavior: HitTestBehavior.translucent,
                   onTap: () {
-                    Provider.of<BookDetailModel>(context, listen: false)
-                        .pageTurning(true);
-                    Provider.of<BookShelfModel>(context, listen: false)
-                        .updateBookInfo(
-                            Provider.of<BookDetailModel>(context, listen: false)
-                                .openBookInfo);
+                    if (ttsOpen) {
+                      Provider.of<BookDetailModel>(context, listen: false)
+                          .pageTurning(true);
+                      Provider.of<BookShelfModel>(context, listen: false)
+                          .updateBookInfo(Provider.of<BookDetailModel>(context,
+                                  listen: false)
+                              .openBookInfo);
+                    }
                   },
                   child: Container()))
         ],
@@ -460,7 +469,6 @@ class _ReadPageState extends State<ReadPage> {
     return Offstage(
       offstage: !(ttsOpen && showController),
       child: Container(
-
         child: Column(
           children: [
             Expanded(
@@ -475,8 +483,8 @@ class _ReadPageState extends State<ReadPage> {
             )),
             Container(
               color: Colors.black87,
-              padding:
-              EdgeInsets.only(bottom: ScreenTools.getScreenBottomBarHeight()),
+              padding: EdgeInsets.only(
+                  bottom: ScreenTools.getScreenBottomBarHeight()),
               child: Column(
                 children: [
                   Container(
@@ -506,7 +514,7 @@ class _ReadPageState extends State<ReadPage> {
                         Expanded(
                             child: Slider(
                           min: 0.1,
-                          max: isAndroid?1.5:0.75,
+                          max: isAndroid ? 1.5 : 0.75,
                           divisions: 5,
                           value: ttsShowValue,
                           onChanged: (double value) {
@@ -535,7 +543,7 @@ class _ReadPageState extends State<ReadPage> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: (){
+                    onTap: () {
                       _stop();
                       setState(() {
                         ttsOpen = false;
@@ -547,7 +555,9 @@ class _ReadPageState extends State<ReadPage> {
                       alignment: Alignment.center,
                       child: Text(
                         "退出听书",
-                        style: TextStyle(fontSize:ScreenTools.getSize(50),color: Colors.white ),
+                        style: TextStyle(
+                            fontSize: ScreenTools.getSize(50),
+                            color: Colors.white),
                       ),
                     ),
                   )
@@ -718,6 +728,5 @@ class _ReadPageState extends State<ReadPage> {
   void dispose() {
     super.dispose();
     flutterTts.stop();
-
   }
 }
