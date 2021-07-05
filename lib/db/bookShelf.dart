@@ -46,8 +46,8 @@ create table $tableBookShelf (
   ''');
       await db.execute('''
   create table $tableBookCatalogue (
-$columnId integer primary key autoincrement, 
-  $columnTitle text not null,
+    $columnId integer primary key autoincrement, 
+    $columnTitle text not null,
     $columnLink text not null,
     $columnContent text,
     $columnBookId int not null
@@ -177,6 +177,26 @@ $columnId integer primary key autoincrement,
     return bcList;
   }
 
+  Future<List<BookCatalogue>> getUnDownloadCatalogues(BookInfo info) async{
+    List<Map> maps = await db.query(
+      tableBookCatalogue,
+      columns: [
+        columnId,
+        columnTitle,
+        columnLink,
+        columnContent,
+        columnBookId
+      ],
+      where:'$columnContent = ? and $columnBookId = ?',
+      whereArgs: ["",info.id]
+    );
+    List<BookCatalogue> bcl = [];
+    for (Map m in maps) {
+      bcl.add(BookCatalogue.fromMap(m));
+    }
+    return bcl;
+  }
+
   Future close() async => db.close();
 }
 
@@ -300,4 +320,5 @@ class BookCatalogue {
     }
     return bc;
   }
+
 }

@@ -191,7 +191,30 @@ class _ReadPageState extends State<ReadPage> {
                 style: TextStyle(
                     fontSize: ScreenTools.getSize(50), color: Colors.white),
               ),
-            ))
+            )),
+            Offstage(
+              offstage:
+              !Provider.of<BookDetailModel>(context, listen: true)
+                  .enableCache,
+              child: GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () {
+                  for(int i =0;i<3;i++) {
+                    Provider.of<BookDetailModel>(context, listen: false)
+                        .cacheFullBook();
+                  }
+                },
+                child: Container(
+                  margin: EdgeInsets.symmetric(
+                      horizontal: ScreenTools.getSize(50)),
+                  child: Icon(
+                    Icons.cloud_download,
+                    color: Colors.white,
+                    size: ScreenTools.getSize(70),
+                  ),
+                ),
+              ),
+            )
           ],
         ),
       ),
@@ -593,22 +616,26 @@ class _ReadPageState extends State<ReadPage> {
                   alignment: Alignment.centerLeft,
                   height: ScreenTools.getSize(106),
                   width: double.infinity,
-                  child: AutoSizeText(
-                    Provider.of<BookDetailModel>(context, listen: true)
-                                .nowCatalogueIndex ==
-                            null
-                        ? ""
-                        : Provider.of<BookDetailModel>(context, listen: true)
-                            .openBookCatalogue[Provider.of<BookDetailModel>(
-                                    context,
+                  child:
+                      AutoSizeText(
+                        Provider.of<BookDetailModel>(context, listen: true)
+                                    .nowCatalogueIndex ==
+                                null
+                            ? ""
+                            : Provider.of<BookDetailModel>(context,
                                     listen: true)
-                                .nowCatalogueIndex!]
-                            .title,
-                    maxLines: 1,
-                    style: TextStyle(
-                        fontSize: ScreenTools.getSize(47),
-                        fontWeight: FontWeight.w200),
-                  ),
+                                .openBookCatalogue[Provider.of<BookDetailModel>(
+                                        context,
+                                        listen: true)
+                                    .nowCatalogueIndex!]
+                                .title,
+                        maxLines: 1,
+                        style: TextStyle(
+                            fontSize: ScreenTools.getSize(47),
+                            fontWeight: FontWeight.w200),
+                      ),
+
+
                 ),
                 Expanded(
                     child: Stack(

@@ -1,3 +1,9 @@
+/*
+ * @Date: 2021-06-03 19:57:52
+ * @LastEditors: 郝怿
+ * @LastEditTime: 2021-07-02 10:49:41
+ * @FilePath: /yuedu/lib/utils/local_storage.dart
+ */
 import 'package:sqflite/sqflite.dart';
 import 'package:yuedu/db/bookShelf.dart';
 

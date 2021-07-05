@@ -45,7 +45,6 @@ class _TabPageState extends State<TabPage> {
   }
 
   Future<void> checkVersion() async {
-
     PackageInfo.fromPlatform().then((PackageInfo packageInfo) async {
       String buildNumber = packageInfo.buildNumber;
       Response res = await Network.get("newVersion");
