@@ -2,7 +2,6 @@ import 'package:battery/battery.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flustars/flustars.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 import 'package:yuedu/db/bookShelf.dart';
 import 'package:yuedu/utils/Paging_tools.dart';
 import 'package:yuedu/utils/book_cache.dart';
