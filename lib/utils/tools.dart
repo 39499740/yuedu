@@ -50,6 +50,9 @@ class Utils {
     String newStr = oldStr;
     newStr = newStr.replaceAll(
         "请记住本书首发域名：www.biquge7.com。笔趣阁手机版更新最快网址：m.biquge7.com", "");
+    newStr = newStr.replaceAll('''电脑访问：
+    　　亲,点击进去,给个好评呗,分数越高更新越快,据说给新笔趣阁打满分的最后都找到了漂亮的老婆哦!''', "");
+
     newStr = newStr.replaceAll("<br>", "\n");
     newStr = newStr.replaceAll("<br/>", "\n");
     newStr = newStr.replaceAll("<br />", "\n");
@@ -69,6 +72,7 @@ class Utils {
     newStr = newStr.replaceAll("\n\n", "\n");
     newStr = newStr.replaceAll("\n\n", "\n");
     newStr = newStr.replaceAll("\n\n", "\n");
+
     while(true) {
       if (newStr.startsWith("\n")) {
         newStr = newStr.replaceFirst("\n", "");
