@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 class PagingTool {
   static List<String> pagingContent(
       String content, double textSize, width, height) {
@@ -8,6 +7,12 @@ class PagingTool {
     int count = 1;
     bool getCount = false;
     while (true) {
+      if (content.startsWith("\n")) {
+        content = content.replaceFirst("\n", "");
+      }
+      if (content.length == 0) {
+        break;
+      }
       if (count > content.length) {
         pageList.add(content);
         break;
