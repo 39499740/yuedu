@@ -10,7 +10,6 @@ class ScreenTools {
 
   static double getScreenBottomBarHeight() {
     return ScreenUtil.getInstance().bottomBarHeight;
-
   }
 
   static double getSize(double inSize) {
@@ -26,11 +25,9 @@ class ScreenTools {
     return ScreenUtil.getInstance().statusBarHeight;
   }
 
-  static double getAppBarHeight(){
+  static double getAppBarHeight() {
     return ScreenUtil.getInstance().appBarHeight;
   }
-
-
 
   //获取比屏幕小XXX的宽度
   static double getWidthFromScreen(double width) {
@@ -41,8 +38,6 @@ class ScreenTools {
   static double getScreenHeight() {
     return ScreenUtil.getInstance().screenHeight;
   }
-
-
 }
 
 class Utils {
@@ -51,9 +46,10 @@ class Utils {
     return json.decode(str!);
   }
 
-  static String getStrWithOutHTML(String oldStr){
+  static String getStrWithOutHTML(String oldStr) {
     String newStr = oldStr;
-    newStr = newStr.replaceAll("请记住本书首发域名：www.biquge7.com。笔趣阁手机版更新最快网址：m.biquge7.com", "");
+    newStr = newStr.replaceAll(
+        "请记住本书首发域名：www.biquge7.com。笔趣阁手机版更新最快网址：m.biquge7.com", "");
     newStr = newStr.replaceAll("<br>", "\n");
     newStr = newStr.replaceAll("<br/>", "\n");
     newStr = newStr.replaceAll("<br />", "\n");
@@ -73,12 +69,19 @@ class Utils {
     newStr = newStr.replaceAll("\n\n", "\n");
     newStr = newStr.replaceAll("\n\n", "\n");
     newStr = newStr.replaceAll("\n\n", "\n");
+    while(true) {
+      if (newStr.startsWith("\n")) {
+        newStr = newStr.replaceFirst("\n", "");
+      }else{
+        break;
+      }
+    }
     bool hasNew = true;
-    while(hasNew){
+    while (hasNew) {
       newStr = newStr.replaceAll("－－", "");
       hasNew = newStr.contains("－－");
     }
-    while(hasNew){
+    while (hasNew) {
       newStr = newStr.replaceAll("***", "");
       hasNew = newStr.contains("***");
     }
@@ -91,7 +94,7 @@ class Network {
       // baseUrl: "http://192.168.0.43:33315/",
       // baseUrl: "http://127.0.0.1:33315/",
       // baseUrl: "http://192.144.135.34:33315/",
-    baseUrl:"http://192.144.135.34:4699/",
+      baseUrl: "http://192.144.135.34:4699/",
       connectTimeout: 5000,
       receiveTimeout: 3000,
       contentType: Headers.formUrlEncodedContentType));
@@ -108,6 +111,7 @@ class Network {
       // that falls out of the range of 2xx and is also not 304.
     }
   }
+
   static get(String path) async {
     try {
       Response res = await dio.get(path);
