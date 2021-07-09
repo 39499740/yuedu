@@ -20,11 +20,11 @@ class PagingTool {
       final painter = TextPainter(
           text: TextSpan(
             text: content.substring(0, count),
-            style: TextStyle(fontSize: textSize, height: 2),
+            style: TextStyle(fontSize: textSize.toInt().toDouble(), height: 2),
           ),
           textDirection: TextDirection.ltr);
-      painter.layout(minWidth: width, maxWidth: width);
-      if (painter.size.height > height) {
+      painter.layout(minWidth: width.toInt().toDouble(), maxWidth: width.toInt().toDouble());
+      if (painter.size.height > height.toInt().toDouble()) {
         count--;
         getCount = true;
       } else {

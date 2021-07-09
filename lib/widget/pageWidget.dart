@@ -1,11 +1,7 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:yuedu/model/bookDetailModel.dart';
 import 'package:yuedu/utils/tools.dart';
-
-
 
 class PageWidget extends StatefulWidget {
   PageWidget({Key? key}) : super(key: key);
@@ -50,10 +46,9 @@ class _PageWidgetState extends State<PageWidget> {
           height: double.infinity,
           child: Text(
             Provider.of<BookDetailModel>(context, listen: true).showStr,
-            style: TextStyle(fontSize: ScreenTools.getSize(50), height: 2),
+            style: TextStyle(fontSize: ScreenTools.getSize(50).toInt().toDouble(), height: 2),
           ),
         ),
-
       ],
     );
   }
